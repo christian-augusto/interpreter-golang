@@ -7,17 +7,15 @@ import (
 )
 
 type lexicalAnalysis struct {
-	sentences    *list.List
-	currentCodes *list.List
-	currentCode  *code
+	codes       *list.List
+	currentCode *code
 }
 
 // LexicalAnalysis constructor
 func newLexicalAnalysis() *lexicalAnalysis {
 	return &lexicalAnalysis{
-		sentences:    list.New(),
-		currentCodes: list.New(),
-		currentCode:  newCode(),
+		codes:       list.New(),
+		currentCode: newCode(),
 	}
 }
 
@@ -90,68 +88,58 @@ func (la *lexicalAnalysis) Start(allCode []rune) error {
 	}
 
 	la.endCode()
-	la.endSentence()
 
-	fmt.Println(la.sentences.Len())
-	for e1 := la.sentences.Front(); e1 != nil; e1 = e1.Next() {
-		fmt.Print("[\n")
+	for e1 := la.codes.Front(); e1 != nil; e1 = e1.Next() {
+		code := e1.Value.(*code)
 
-		sentence := e1.Value.(*sentence)
-
-		for e2 := sentence.codes.Front(); e2 != nil; e2 = e2.Next() {
-			code := e2.Value.(*code)
-
-			fmt.Print(code.toString() + " ")
-		}
-
-		fmt.Print("\n]\n")
+		fmt.Print(code.toString() + " ")
 	}
 
 	return nil
 }
 
 func (la *lexicalAnalysis) charIsALineBreaker(char string) bool {
-	return strings.Contains(lineBreaker, char)
+	return strings.Contains(LINE_BREAKER, char)
 }
 
 func (la *lexicalAnalysis) charIsAWhiteSpace(char string) bool {
-	return strings.Contains(whiteSpaces, char)
+	return strings.Contains(WHITE_SPACES_CHARS, char)
 }
 
 // func (la *lexicalAnalysis) charIsAAlphabetChar(char string) bool {
-// 	return strings.Contains(alphabetChars, char)
+// 	return strings.Contains(ALPHABET_CHARS, char)
 // }
 
 func (la *lexicalAnalysis) charIsANumber(char string) bool {
-	return strings.Contains(numbers, char)
+	return strings.Contains(NUMBERS_CHARS, char)
 }
 
 func (la *lexicalAnalysis) charIsAMathOperationSymbol(char string) bool {
-	return strings.Contains(mathOperationsSymbols, char)
+	return strings.Contains(MATH_OPERATIONS_SYMBOLS, char)
 }
 
 func (la *lexicalAnalysis) charIsASymbol(char string) bool {
-	return strings.Contains(symbols, char)
+	return strings.Contains(SYMBOLS, char)
 }
 
 func (la *lexicalAnalysis) charIsANumberSignal(char string) bool {
-	return strings.Contains(numberSignals, char)
+	return strings.Contains(NUMBER_SIGNAL_SYMBOLS, char)
 }
 
 func (la *lexicalAnalysis) charIsAFloatNumberSeparator(char string) bool {
-	return strings.Contains(floatNumberSeparators, char)
+	return strings.Contains(FLOAT_NUMBER_SEPARATOR, char)
 }
 
 func (la *lexicalAnalysis) charIsAStringDelimiter(char string) bool {
-	return strings.Contains(stringDelimiters, char)
+	return strings.Contains(STRING_DELIMITERS, char)
 }
 
 func (la *lexicalAnalysis) charIsAEcapeChar(char string) bool {
-	return strings.Contains(scapeChars, char)
+	return strings.Contains(SCAPE_CHARS, char)
 }
 
 func (la *lexicalAnalysis) charIsInDictionary(char string) bool {
-	return strings.Contains(languageDictionary, char)
+	return strings.Contains(LANGUAGE_DICTIONARY, char)
 }
 
 func (la *lexicalAnalysis) escapedChar(char string) bool {
@@ -162,15 +150,8 @@ func (la *lexicalAnalysis) escapedChar(char string) bool {
 
 func (la *lexicalAnalysis) endCode() {
 	if !la.currentCode.isEmpty() {
-		la.currentCodes.PushBack(la.currentCode)
+		la.codes.PushBack(la.currentCode)
 		la.currentCode = newCode()
-	}
-}
-
-func (la *lexicalAnalysis) endSentence() {
-	if la.currentCodes.Len() > 0 {
-		la.sentences.PushBack(newSentence(la.currentCodes))
-		la.currentCodes = list.New()
 	}
 }
 
@@ -201,16 +182,12 @@ func (la *lexicalAnalysis) processCharInsideString(char string, line uint64) (bo
 
 func (la *lexicalAnalysis) processLineBreaker(char string, line uint64) (bool, error) {
 	if la.charIsALineBreaker(char) {
-		if la.currentCode.isEmpty() {
-			la.endSentence()
-		} else if la.currentCode.isLiteralValue() {
+		if la.currentCode.isLiteralValue() {
 			if la.currentCode.isNumberType() {
 				la.endCode()
-				la.endSentence()
 			}
 		} else if la.currentCode.isAMathOperationSymbol() {
 			la.endCode()
-			la.endSentence()
 		}
 
 		return true, nil
@@ -241,14 +218,14 @@ func (la *lexicalAnalysis) processWhiteSpace(char string, line uint64) (bool, er
 func (la *lexicalAnalysis) processNumber(char string, line uint64) (bool, error) {
 	if la.charIsANumber(char) {
 		if la.currentCode.isEmpty() || la.currentCode.isNumberSignalSymbol() {
-			la.currentCode.setLiteralValue(char, intValueType, line)
-		} else if la.currentCode.label == literalValue {
-			valueType := intValueType
+			la.currentCode.setLiteralValue(char, INT_VALUE_TYPE, line)
+		} else if la.currentCode.isLiteralValue() {
+			valueType := INT_VALUE_TYPE
 
-			if la.currentCode.valueType == floatValueType {
-				valueType = floatValueType
-			} else if la.currentCode.valueType == doubleValueType {
-				valueType = doubleValueType
+			if la.currentCode.valueType == FLOAT_VALUE_TYPE {
+				valueType = FLOAT_VALUE_TYPE
+			} else if la.currentCode.valueType == DOUBLE_VALUE_TYPE {
+				valueType = DOUBLE_VALUE_TYPE
 			}
 
 			la.currentCode.setLiteralValue(char, valueType, line)
@@ -288,13 +265,7 @@ func (la *lexicalAnalysis) processSymbol(char string, line uint64) error {
 				return floatNumberSeparatorInvalidPosition(char, line)
 			}
 
-			valueType := floatValueType
-
-			if la.currentCode.isStringType() {
-				valueType = stringValueType
-			}
-
-			la.currentCode.setLiteralValue(char, valueType, line)
+			la.currentCode.setLiteralValue(char, FLOAT_VALUE_TYPE, line)
 		}
 	}
 

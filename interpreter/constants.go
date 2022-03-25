@@ -1,56 +1,54 @@
 package interpreter
 
-// valueTypes
-const intValueType = "int"
-const floatValueType = "float"
-const doubleValueType = "double"
-const stringValueType = "string"
-
-// const booleanValueType = "boolean"
+// value types
+const INT_VALUE_TYPE = "int"
+const FLOAT_VALUE_TYPE = "float"
+const DOUBLE_VALUE_TYPE = "double"
+const STRING_VALUE_TYPE = "string"
+const BOOLEAN_VALUE_TYPE = "boolean"
 
 // dictionary
-const lineBreaker = "\n"
-const whiteSpaces = "\t" + " "
-const scapeChars = "\\"
+const LINE_BREAKER = "\n"
+const WHITE_SPACES_CHARS = "\t" + " "
+const SCAPE_CHARS = "\\"
 
-// const alphabetChars = "abcdefghijklsmnopqrstuvwxyz"
-const numbers = "012345679"
+const ALPHABET_CHARS = "abcdefghijklsmnopqrstuvwxyz"
+const NUMBERS_CHARS = "012345679"
 
-const sumSymbol = "+"
-const subSymbol = "-"
-const multSymbol = "*"
-const divSymbol = "/"
-const modSymbol = "%"
-const expSymbol = "^"
+const SUM_SYMBOL = "+"
+const SUB_SYMBOL = "-"
+const MULT_SYMBOL = "*"
+const DIV_SYMBOL = "/"
+const MOD_SYMBOL = "%"
+const EXP_SYMBOL = "^"
 
-const mathOperationsSymbols = sumSymbol +
-	subSymbol +
-	multSymbol +
-	divSymbol +
-	modSymbol +
-	expSymbol
+const MATH_OPERATIONS_SYMBOLS = SUM_SYMBOL +
+	SUB_SYMBOL +
+	MULT_SYMBOL +
+	DIV_SYMBOL +
+	MOD_SYMBOL +
+	EXP_SYMBOL
 
-const floatNumberSeparators = "."
-const stringDelimiters = "'\""
-const numberSignals = "+-"
+const FLOAT_NUMBER_SEPARATOR = "."
+const STRING_DELIMITERS = "'" + "\""
 
-// const attrSymbol = "="
-const symbols = mathOperationsSymbols +
-	floatNumberSeparators +
-	stringDelimiters +
-	numberSignals
-	// attrSymbol
+const POSITIVE_NUMBER_SYMBOL = "+"
+const NEGATIVE_NUMBER_SYMBOL = "-"
+const NUMBER_SIGNAL_SYMBOLS = POSITIVE_NUMBER_SYMBOL + NEGATIVE_NUMBER_SYMBOL
 
-const languageDictionary = lineBreaker +
-	whiteSpaces +
-	// alphabetChars +
-	numbers +
-	symbols
+const SYMBOLS = MATH_OPERATIONS_SYMBOLS +
+	FLOAT_NUMBER_SEPARATOR +
+	STRING_DELIMITERS +
+	NUMBER_SIGNAL_SYMBOLS
+
+const LANGUAGE_DICTIONARY = LINE_BREAKER +
+	WHITE_SPACES_CHARS +
+	SCAPE_CHARS +
+	ALPHABET_CHARS +
+	NUMBERS_CHARS +
+	SYMBOLS
 
 // code labels
-const literalValue = "literal_value"
-const mathOperationSymbol = "math_operation_symbol"
-const numberSignalSymbol = "number_signal_symbol"
-
-// sentence labels
-// const mathOperation = "math_operation"
+const LITERAL_VALUE_LABEL = "literal_value"
+const MATH_OPERATION_SYMBOL_LABEL = "math_operation_symbol"
+const NUMBER_SIGNAL_SYMBOL_LABEL = "number_signal_symbol"

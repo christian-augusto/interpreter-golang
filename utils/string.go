@@ -5,3 +5,7 @@ func StringLen(str string) uint64 {
 
 	return uint64(len(r))
 }
+
+func StringIsEmpty(str string) bool {
+	return len(str) == 0 && str == ""
+}

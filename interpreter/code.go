@@ -1,6 +1,9 @@
 package interpreter
 
-import "fmt"
+import (
+	"fmt"
+	"interpreter-golang/utils"
+)
 
 type code struct {
 	label           string
@@ -15,65 +18,65 @@ func newCode() *code {
 }
 
 func (c *code) setLiteralValue(value string, valueType string, line uint64) {
-	c.label = literalValue
+	c.label = LITERAL_VALUE_LABEL
 	c.value += value
 	c.valueType = valueType
 	c.line = line
 }
 
 func (c *code) setMathOperationSymbol(value string, line uint64) {
-	c.label = mathOperationSymbol
+	c.label = MATH_OPERATION_SYMBOL_LABEL
 	c.value = value
 	c.line = line
 }
 
 func (c *code) setNumberSignalSymbol(value string, line uint64) {
-	c.label = numberSignalSymbol
+	c.label = NUMBER_SIGNAL_SYMBOL_LABEL
 	c.value = value
 	c.line = line
 }
 
 func (c *code) setStringDelimiterSymbol(stringDelimiter string, line uint64) {
-	c.label = literalValue
-	c.valueType = stringValueType
+	c.label = LITERAL_VALUE_LABEL
+	c.valueType = STRING_VALUE_TYPE
 	c.stringDelimiter = stringDelimiter
 	c.line = line
 }
 
 func (c *code) isEmpty() bool {
-	return c.label == ""
+	return utils.StringIsEmpty(c.label)
 }
 
 func (c *code) isLiteralValue() bool {
-	return c.label == literalValue
+	return c.label == LITERAL_VALUE_LABEL
 }
 
 func (c *code) isNumberType() bool {
-	return c.label == literalValue &&
-		(c.valueType == intValueType ||
-			c.valueType == floatValueType ||
-			c.valueType == doubleValueType)
+	return c.label == LITERAL_VALUE_LABEL &&
+		(c.valueType == INT_VALUE_TYPE ||
+			c.valueType == FLOAT_VALUE_TYPE ||
+			c.valueType == DOUBLE_VALUE_TYPE)
 }
 
 func (c *code) isIntNumberType() bool {
-	return c.valueType == intValueType
-}
-
-func (c *code) isNumberSignalSymbol() bool {
-	return c.label == numberSignalSymbol
+	return c.valueType == INT_VALUE_TYPE
 }
 
 // func (c *code) isFloatingPointNumberType() bool {
-// 	return c.valueType == floatValueType ||
-// 		c.valueType == doubleValueType
+// 	return c.valueType == FLOAT_VALUE_TYPE ||
+// 		c.valueType == DOUBLE_VALUE_TYPE
 // }
 
 func (c *code) isStringType() bool {
-	return c.valueType == stringValueType
+	return c.valueType == STRING_VALUE_TYPE
 }
 
 func (c *code) isAMathOperationSymbol() bool {
-	return c.label == mathOperationSymbol
+	return c.label == MATH_OPERATION_SYMBOL_LABEL
+}
+
+func (c *code) isNumberSignalSymbol() bool {
+	return c.label == NUMBER_SIGNAL_SYMBOL_LABEL
 }
 
 func (c *code) toString() string {
