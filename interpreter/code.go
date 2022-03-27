@@ -43,6 +43,12 @@ func (c *code) setStringDelimiterSymbol(stringDelimiter string, line uint64) {
 	c.line = line
 }
 
+func (c *code) setIdentifier(value string, line uint64) {
+	c.label = IDENTIFIER_LABEL
+	c.value += value
+	c.line = line
+}
+
 func (c *code) isEmpty() bool {
 	return utils.StringIsEmpty(c.label)
 }
@@ -77,6 +83,10 @@ func (c *code) isAMathOperationSymbol() bool {
 
 func (c *code) isNumberSignalSymbol() bool {
 	return c.label == NUMBER_SIGNAL_SYMBOL_LABEL
+}
+
+func (c *code) isAIdentifier() bool {
+	return c.label == IDENTIFIER_LABEL
 }
 
 func (c *code) toString() string {

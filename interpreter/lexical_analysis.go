@@ -80,10 +80,24 @@ func (la *lexicalAnalysis) Start(allCode []rune) error {
 			continue
 		}
 
-		err = la.processSymbol(char, currentLine)
+		processed, err = la.processSymbol(char, currentLine)
 
 		if err != nil {
 			return err
+		}
+
+		if processed {
+			continue
+		}
+
+		processed, err = la.processIdentifierChar(char, currentLine)
+
+		if err != nil {
+			return err
+		}
+
+		if processed {
+			continue
 		}
 	}
 
@@ -102,13 +116,13 @@ func (la *lexicalAnalysis) charIsALineBreaker(char string) bool {
 	return strings.Contains(LINE_BREAKER, char)
 }
 
-func (la *lexicalAnalysis) charIsAWhiteSpace(char string) bool {
+func (la *lexicalAnalysis) charIsAWhiteSpaceChar(char string) bool {
 	return strings.Contains(WHITE_SPACES_CHARS, char)
 }
 
-// func (la *lexicalAnalysis) charIsAAlphabetChar(char string) bool {
-// 	return strings.Contains(ALPHABET_CHARS, char)
-// }
+func (la *lexicalAnalysis) charIsAIdentifierChar(char string) bool {
+	return strings.Contains(IDENTIFIER_CHARS, char)
+}
 
 func (la *lexicalAnalysis) charIsANumber(char string) bool {
 	return strings.Contains(NUMBERS_CHARS, char)
@@ -165,7 +179,6 @@ func (la *lexicalAnalysis) processCharInsideString(char string, line uint64) (bo
 			} else {
 				return false, nil
 			}
-
 		} else {
 			if la.charIsALineBreaker(char) {
 				return true, lineBreakerInsideString(char, line-1)
@@ -197,17 +210,12 @@ func (la *lexicalAnalysis) processLineBreaker(char string, line uint64) (bool, e
 }
 
 func (la *lexicalAnalysis) processWhiteSpace(char string, line uint64) (bool, error) {
-	if la.charIsAWhiteSpace(char) {
-		if la.currentCode.isLiteralValue() {
-			if la.currentCode.isNumberType() {
-				la.endCode()
-			}
-		} else if la.currentCode.isNumberSignalSymbol() {
+	if la.charIsAWhiteSpaceChar(char) {
+		if la.currentCode.isNumberSignalSymbol() {
 			la.currentCode.setMathOperationSymbol(la.currentCode.value, line)
-			la.endCode()
-		} else if la.currentCode.isAMathOperationSymbol() {
-			la.endCode()
 		}
+
+		la.endCode()
 
 		return true, nil
 	}
@@ -237,17 +245,17 @@ func (la *lexicalAnalysis) processNumber(char string, line uint64) (bool, error)
 	return false, nil
 }
 
-func (la *lexicalAnalysis) processSymbol(char string, line uint64) error {
+func (la *lexicalAnalysis) processSymbol(char string, line uint64) (bool, error) {
 	if la.charIsASymbol(char) {
 		if la.charIsANumberSignal(char) {
 			if la.currentCode.isEmpty() {
 				la.currentCode.setNumberSignalSymbol(char, line)
 			} else if la.currentCode.isAMathOperationSymbol() || la.currentCode.isNumberSignalSymbol() {
-				return unexpectedToken(la.currentCode.value+char, line)
+				return true, unexpectedToken(la.currentCode.value+char, line)
 			}
 		} else if la.charIsAMathOperationSymbol(char) {
 			if la.currentCode.isAMathOperationSymbol() || la.currentCode.isNumberSignalSymbol() {
-				return unexpectedToken(la.currentCode.value+char, line)
+				return true, unexpectedToken(la.currentCode.value+char, line)
 			}
 
 			la.endCode()
@@ -262,12 +270,24 @@ func (la *lexicalAnalysis) processSymbol(char string, line uint64) error {
 			}
 		} else if la.charIsAFloatNumberSeparator(char) {
 			if !(la.currentCode.isLiteralValue() && la.currentCode.isIntNumberType()) {
-				return floatNumberSeparatorInvalidPosition(char, line)
+				return true, floatNumberSeparatorInvalidPosition(char, line)
 			}
 
 			la.currentCode.setLiteralValue(char, FLOAT_VALUE_TYPE, line)
 		}
 	}
 
-	return nil
+	return false, nil
+}
+
+func (la *lexicalAnalysis) processIdentifierChar(char string, line uint64) (bool, error) {
+	if la.charIsAIdentifierChar(char) {
+		if la.currentCode.isEmpty() || la.currentCode.isAIdentifier() {
+			la.currentCode.setIdentifier(char, line)
+
+			return true, nil
+		}
+	}
+
+	return false, nil
 }

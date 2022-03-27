@@ -12,7 +12,7 @@ const LINE_BREAKER = "\n"
 const WHITE_SPACES_CHARS = "\t" + " "
 const SCAPE_CHARS = "\\"
 
-const ALPHABET_CHARS = "abcdefghijklsmnopqrstuvwxyz"
+const IDENTIFIER_CHARS = "abcdefghijklsmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$"
 const NUMBERS_CHARS = "012345679"
 
 const SUM_SYMBOL = "+"
@@ -44,7 +44,7 @@ const SYMBOLS = MATH_OPERATIONS_SYMBOLS +
 const LANGUAGE_DICTIONARY = LINE_BREAKER +
 	WHITE_SPACES_CHARS +
 	SCAPE_CHARS +
-	ALPHABET_CHARS +
+	IDENTIFIER_CHARS +
 	NUMBERS_CHARS +
 	SYMBOLS
 
@@ -52,3 +52,4 @@ const LANGUAGE_DICTIONARY = LINE_BREAKER +
 const LITERAL_VALUE_LABEL = "literal_value"
 const MATH_OPERATION_SYMBOL_LABEL = "math_operation_symbol"
 const NUMBER_SIGNAL_SYMBOL_LABEL = "number_signal_symbol"
+const IDENTIFIER_LABEL = "identifier"

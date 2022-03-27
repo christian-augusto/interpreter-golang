@@ -10,7 +10,7 @@ import (
 func main() {
 	var logger dependencies.Logger = logger.NewLogger()
 
-	// test1(logger)
+	test1(logger)
 	// test2(logger)
 	// test3(logger)
 	// test4(logger)
@@ -21,7 +21,9 @@ func main() {
 	// test9(logger)
 	// test10(logger)
 	// test11(logger)
-	test12(logger)
+	// test12(logger)
+	// test13(logger)
+	// test14(logger)
 }
 
 func test1(logger dependencies.Logger) {
@@ -223,6 +225,40 @@ func test11(logger dependencies.Logger) {
 func test12(logger dependencies.Logger) {
 	code := `
 		1 * -2
+	`
+
+	comp := interpreter.NewInterpreter(code)
+
+	err := comp.Start()
+
+	if err != nil {
+		logger.Error(err)
+		return
+	}
+
+	fmt.Println("------------")
+}
+
+func test13(logger dependencies.Logger) {
+	code := `
+		1 + "2"
+	`
+
+	comp := interpreter.NewInterpreter(code)
+
+	err := comp.Start()
+
+	if err != nil {
+		logger.Error(err)
+		return
+	}
+
+	fmt.Println("------------")
+}
+
+func test14(logger dependencies.Logger) {
+	code := `
+		a 2
 	`
 
 	comp := interpreter.NewInterpreter(code)
