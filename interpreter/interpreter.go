@@ -1,19 +1,33 @@
 package interpreter
 
 type interpreter struct {
-	lexicalAnalysis *lexicalAnalysis
 	allCode         []rune
+	lexicalAnalysis *lexicalAnalysis
+	syntaxAnalysis  *syntaxAnalysis
 }
 
 func NewInterpreter(allCode string) *interpreter {
 	return &interpreter{
 		allCode:         []rune(allCode),
 		lexicalAnalysis: newLexicalAnalysis(),
+		syntaxAnalysis:  newSyntaxAnalysis(),
 	}
 }
 
 func (c *interpreter) Start() error {
-	err := c.lexicalAnalysis.Start(c.allCode)
+	var err error = nil
 
-	return err
+	err = c.lexicalAnalysis.Start(c.allCode)
+
+	if err != nil {
+		return err
+	}
+
+	err = c.syntaxAnalysis.Start(c.lexicalAnalysis.allCodes)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

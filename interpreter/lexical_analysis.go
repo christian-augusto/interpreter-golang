@@ -7,21 +7,22 @@ import (
 )
 
 type lexicalAnalysis struct {
-	codes       *list.List
+	allCodes    *list.List
 	currentCode *code
 }
 
-// LexicalAnalysis constructor
+// lexicalAnalysis constructor
 func newLexicalAnalysis() *lexicalAnalysis {
 	return &lexicalAnalysis{
-		codes:       list.New(),
+		allCodes:    list.New(),
 		currentCode: newCode(),
 	}
 }
 
 // Start lexical analysis
 func (la *lexicalAnalysis) Start(allCode []rune) error {
-	var currentLine uint64 = 1
+	var err error = nil
+	currentLine := uint64(1)
 
 	for _, c := range allCode {
 		char := string(c)
@@ -35,8 +36,6 @@ func (la *lexicalAnalysis) Start(allCode []rune) error {
 		if la.charIsALineBreaker(char) {
 			currentLine++
 		}
-
-		var err error = nil
 
 		processed := false
 
@@ -103,13 +102,13 @@ func (la *lexicalAnalysis) Start(allCode []rune) error {
 
 	la.endCode()
 
-	for e1 := la.codes.Front(); e1 != nil; e1 = e1.Next() {
+	for e1 := la.allCodes.Front(); e1 != nil; e1 = e1.Next() {
 		code := e1.Value.(*code)
 
 		fmt.Print(code.toString() + " ")
 	}
 
-	return nil
+	return err
 }
 
 func (la *lexicalAnalysis) charIsALineBreaker(char string) bool {
@@ -164,7 +163,7 @@ func (la *lexicalAnalysis) escapedChar(char string) bool {
 
 func (la *lexicalAnalysis) endCode() {
 	if !la.currentCode.isEmpty() {
-		la.codes.PushBack(la.currentCode)
+		la.allCodes.PushBack(la.currentCode)
 		la.currentCode = newCode()
 	}
 }

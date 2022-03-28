@@ -31,9 +31,9 @@ func test1(logger dependencies.Logger) {
 		1 + 2
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -49,9 +49,9 @@ func test2(logger dependencies.Logger) {
 		2
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -66,9 +66,9 @@ func test3(logger dependencies.Logger) {
 		"'"
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -83,9 +83,9 @@ func test4(logger dependencies.Logger) {
 		"\""
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -102,9 +102,9 @@ func test5(logger dependencies.Logger) {
 		"
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -120,9 +120,9 @@ func test6(logger dependencies.Logger) {
 		2
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -142,9 +142,9 @@ func test7(logger dependencies.Logger) {
 		6 ^ 6
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -159,9 +159,9 @@ func test8(logger dependencies.Logger) {
 		5.555.
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -176,9 +176,9 @@ func test9(logger dependencies.Logger) {
 		1 - -2
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -193,9 +193,9 @@ func test10(logger dependencies.Logger) {
 		1 - -2
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -210,9 +210,9 @@ func test11(logger dependencies.Logger) {
 		1 *-2
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -227,9 +227,9 @@ func test12(logger dependencies.Logger) {
 		1 * -2
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -244,9 +244,9 @@ func test13(logger dependencies.Logger) {
 		1 + "2"
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
@@ -261,9 +261,9 @@ func test14(logger dependencies.Logger) {
 		a 2
 	`
 
-	comp := interpreter.NewInterpreter(code)
+	interp := interpreter.NewInterpreter(code)
 
-	err := comp.Start()
+	err := interp.Start()
 
 	if err != nil {
 		logger.Error(err)
