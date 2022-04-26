@@ -1,55 +1,55 @@
 package interpreter
 
 // value types
-const INT_VALUE_TYPE = "int"
-const FLOAT_VALUE_TYPE = "float"
-const DOUBLE_VALUE_TYPE = "double"
-const STRING_VALUE_TYPE = "string"
-const BOOLEAN_VALUE_TYPE = "boolean"
+const intValueType = "int"
+const floatValueType = "float"
+const doubleValueType = "double"
+const stringValueType = "string"
+const booleanValueType = "boolean"
 
 // dictionary
-const LINE_BREAKER = "\n"
-const WHITE_SPACES_CHARS = "\t" + " "
-const SCAPE_CHARS = "\\"
+const lineBreaker = "\n"
+const whiteSpacesChars = "\t" + " "
+const scapeChars = "\\"
 
-const IDENTIFIER_CHARS = "abcdefghijklsmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$"
-const NUMBERS_CHARS = "012345679"
+const identifierChars = "abcdefghijklsmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$"
+const numbersChars = "012345679"
 
-const SUM_SYMBOL = "+"
-const SUB_SYMBOL = "-"
-const MULT_SYMBOL = "*"
-const DIV_SYMBOL = "/"
-const MOD_SYMBOL = "%"
-const EXP_SYMBOL = "^"
+const sumSymbol = "+"
+const subSymbol = "-"
+const multSymbol = "*"
+const divSymbol = "/"
+const modSymbol = "%"
+const expSymbol = "^"
 
-const MATH_OPERATIONS_SYMBOLS = SUM_SYMBOL +
-	SUB_SYMBOL +
-	MULT_SYMBOL +
-	DIV_SYMBOL +
-	MOD_SYMBOL +
-	EXP_SYMBOL
+const mathOperationsSymbols = sumSymbol +
+	subSymbol +
+	multSymbol +
+	divSymbol +
+	modSymbol +
+	expSymbol
 
-const FLOAT_NUMBER_SEPARATOR = "."
-const STRING_DELIMITERS = "'" + "\""
+const floatNumberSeparator = "."
+const stringDelimiters = "'" + "\""
 
-const POSITIVE_NUMBER_SYMBOL = "+"
-const NEGATIVE_NUMBER_SYMBOL = "-"
-const NUMBER_SIGNAL_SYMBOLS = POSITIVE_NUMBER_SYMBOL + NEGATIVE_NUMBER_SYMBOL
+const positiveNumberSymbol = "+"
+const negativeNumberSymbol = "-"
+const numberSignalSymbols = positiveNumberSymbol + negativeNumberSymbol
 
-const SYMBOLS = MATH_OPERATIONS_SYMBOLS +
-	FLOAT_NUMBER_SEPARATOR +
-	STRING_DELIMITERS +
-	NUMBER_SIGNAL_SYMBOLS
+const symbols = mathOperationsSymbols +
+	floatNumberSeparator +
+	stringDelimiters +
+	numberSignalSymbols
 
-const LANGUAGE_DICTIONARY = LINE_BREAKER +
-	WHITE_SPACES_CHARS +
-	SCAPE_CHARS +
-	IDENTIFIER_CHARS +
-	NUMBERS_CHARS +
-	SYMBOLS
+const languageDictionary = lineBreaker +
+	whiteSpacesChars +
+	scapeChars +
+	identifierChars +
+	numbersChars +
+	symbols
 
 // code labels
-const LITERAL_VALUE_LABEL = "literal_value"
-const MATH_OPERATION_SYMBOL_LABEL = "math_operation_symbol"
-const NUMBER_SIGNAL_SYMBOL_LABEL = "number_signal_symbol"
-const IDENTIFIER_LABEL = "identifier"
+const literalValueLabel = "literal_value"
+const mathOperationSymbolLabel = "math_operation_symbol"
+const numberSignalSymbolLabel = "number_signal_symbol"
+const identifierLabel = "identifier"

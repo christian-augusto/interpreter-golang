@@ -10,41 +10,41 @@ type code struct {
 	value           string
 	valueType       string
 	stringDelimiter string
-	line            uint64
+	line            int
 }
 
 func newCode() *code {
 	return &code{}
 }
 
-func (c *code) setLiteralValue(value string, valueType string, line uint64) {
-	c.label = LITERAL_VALUE_LABEL
+func (c *code) setLiteralValue(value string, valueType string, line int) {
+	c.label = literalValueLabel
 	c.value += value
 	c.valueType = valueType
 	c.line = line
 }
 
-func (c *code) setMathOperationSymbol(value string, line uint64) {
-	c.label = MATH_OPERATION_SYMBOL_LABEL
+func (c *code) setMathOperationSymbol(value string, line int) {
+	c.label = mathOperationSymbolLabel
 	c.value = value
 	c.line = line
 }
 
-func (c *code) setNumberSignalSymbol(value string, line uint64) {
-	c.label = NUMBER_SIGNAL_SYMBOL_LABEL
+func (c *code) setNumberSignalSymbol(value string, line int) {
+	c.label = numberSignalSymbolLabel
 	c.value = value
 	c.line = line
 }
 
-func (c *code) setStringDelimiterSymbol(stringDelimiter string, line uint64) {
-	c.label = LITERAL_VALUE_LABEL
-	c.valueType = STRING_VALUE_TYPE
+func (c *code) setStringDelimiterSymbol(stringDelimiter string, line int) {
+	c.label = literalValueLabel
+	c.valueType = stringValueType
 	c.stringDelimiter = stringDelimiter
 	c.line = line
 }
 
-func (c *code) setIdentifier(value string, line uint64) {
-	c.label = IDENTIFIER_LABEL
+func (c *code) setIdentifier(value string, line int) {
+	c.label = identifierLabel
 	c.value += value
 	c.line = line
 }
@@ -54,39 +54,39 @@ func (c *code) isEmpty() bool {
 }
 
 func (c *code) isLiteralValue() bool {
-	return c.label == LITERAL_VALUE_LABEL
+	return c.label == literalValueLabel
 }
 
 func (c *code) isNumberType() bool {
-	return c.label == LITERAL_VALUE_LABEL &&
-		(c.valueType == INT_VALUE_TYPE ||
-			c.valueType == FLOAT_VALUE_TYPE ||
-			c.valueType == DOUBLE_VALUE_TYPE)
+	return c.label == literalValueLabel &&
+		(c.valueType == intValueType ||
+			c.valueType == floatValueType ||
+			c.valueType == doubleValueType)
 }
 
 func (c *code) isIntNumberType() bool {
-	return c.valueType == INT_VALUE_TYPE
+	return c.valueType == intValueType
 }
 
 // func (c *code) isFloatingPointNumberType() bool {
-// 	return c.valueType == FLOAT_VALUE_TYPE ||
-// 		c.valueType == DOUBLE_VALUE_TYPE
+// 	return c.valueType == floatValueType ||
+// 		c.valueType == doubleValueType
 // }
 
 func (c *code) isStringType() bool {
-	return c.valueType == STRING_VALUE_TYPE
+	return c.valueType == stringValueType
 }
 
 func (c *code) isAMathOperationSymbol() bool {
-	return c.label == MATH_OPERATION_SYMBOL_LABEL
+	return c.label == mathOperationSymbolLabel
 }
 
 func (c *code) isNumberSignalSymbol() bool {
-	return c.label == NUMBER_SIGNAL_SYMBOL_LABEL
+	return c.label == numberSignalSymbolLabel
 }
 
 func (c *code) isAIdentifier() bool {
-	return c.label == IDENTIFIER_LABEL
+	return c.label == identifierLabel
 }
 
 func (c *code) toString() string {

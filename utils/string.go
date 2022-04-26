@@ -1,9 +1,9 @@
 package utils
 
-func StringLen(str string) uint64 {
+func StringLen(str string) int {
 	r := []rune(str)
 
-	return uint64(len(r))
+	return int(len(r))
 }
 
 func StringIsEmpty(str string) bool {
