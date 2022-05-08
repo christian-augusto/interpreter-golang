@@ -17,6 +17,12 @@ func TestStart(t *testing.T) {
 	case10(t)
 	case11(t)
 	case12(t)
+	case13(t)
+	case14(t)
+	case15(t)
+	case16(t)
+	case17(t)
+	case18(t)
 }
 
 func case1(t *testing.T) {
@@ -497,5 +503,199 @@ func case12(t *testing.T) {
 			c.line != 2 {
 			t.Errorf("Code[2] isn't in the current value %v", c)
 		}
+	}
+}
+
+func case13(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis()
+
+	codeStr = `
+		a2 = 2
+	`
+
+	err = lexicalAnalysis.Start([]rune(codeStr))
+
+	if err != nil {
+		t.Error(err)
+	} else {
+		elem := lexicalAnalysis.allCodes.Front()
+		c := elem.Value.(*code)
+
+		if c.label != "identifier" || c.value != "a2" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 2 {
+			t.Errorf("Code[0] isn't in the current value %v", c)
+		}
+
+		elem = elem.Next()
+		c = elem.Value.(*code)
+
+		if c.label != "attribution_symbol" || c.value != "=" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 2 {
+			t.Errorf("Code[1] isn't in the current value %v", c)
+		}
+
+		elem = elem.Next()
+		c = elem.Value.(*code)
+
+		if c.label != "literal_value" || c.value != "2" || c.valueType != "int" || c.stringDelimiter != "" ||
+			c.line != 2 {
+			t.Errorf("Code[2] isn't in the current value %v", c)
+		}
+	}
+}
+
+func case14(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis()
+
+	codeStr = `
+		a2= 2
+	`
+
+	err = lexicalAnalysis.Start([]rune(codeStr))
+
+	if err == nil {
+		t.Error("Invalid token a2=")
+	}
+}
+
+func case15(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis()
+
+	codeStr = `
+		a = "2"
+	`
+
+	err = lexicalAnalysis.Start([]rune(codeStr))
+
+	if err != nil {
+		t.Error(err)
+	} else {
+		elem := lexicalAnalysis.allCodes.Front()
+		c := elem.Value.(*code)
+
+		if c.label != "identifier" || c.value != "a" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 2 {
+			t.Errorf("Code[0] isn't in the current value %v", c)
+		}
+
+		elem = elem.Next()
+		c = elem.Value.(*code)
+
+		if c.label != "attribution_symbol" || c.value != "=" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 2 {
+			t.Errorf("Code[1] isn't in the current value %v", c)
+		}
+
+		elem = elem.Next()
+		c = elem.Value.(*code)
+
+		if c.label != "literal_value" || c.value != "2" || c.valueType != "string" || c.stringDelimiter != "\"" ||
+			c.line != 2 {
+			t.Errorf("Code[2] isn't in the current value %v", c)
+		}
+	}
+}
+
+func case16(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis()
+
+	codeStr = `
+		a
+		= "2"
+	`
+
+	err = lexicalAnalysis.Start([]rune(codeStr))
+
+	if err != nil {
+		t.Error(err)
+	} else {
+		elem := lexicalAnalysis.allCodes.Front()
+		c := elem.Value.(*code)
+
+		if c.label != "identifier" || c.value != "a" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 2 {
+			t.Errorf("Code[0] isn't in the current value %v", c)
+		}
+
+		elem = elem.Next()
+		c = elem.Value.(*code)
+
+		if c.label != "attribution_symbol" || c.value != "=" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 3 {
+			t.Errorf("Code[1] isn't in the current value %v", c)
+		}
+
+		elem = elem.Next()
+		c = elem.Value.(*code)
+
+		if c.label != "literal_value" || c.value != "2" || c.valueType != "string" || c.stringDelimiter != "\"" ||
+			c.line != 3 {
+			t.Errorf("Code[2] isn't in the current value %v", c)
+		}
+	}
+}
+
+func case17(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis()
+
+	codeStr = `
+		a2
+		= "2"
+	`
+
+	err = lexicalAnalysis.Start([]rune(codeStr))
+
+	if err != nil {
+		t.Error(err)
+	} else {
+		elem := lexicalAnalysis.allCodes.Front()
+		c := elem.Value.(*code)
+
+		if c.label != "identifier" || c.value != "a2" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 2 {
+			t.Errorf("Code[0] isn't in the current value %v", c)
+		}
+
+		elem = elem.Next()
+		c = elem.Value.(*code)
+
+		if c.label != "attribution_symbol" || c.value != "=" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 3 {
+			t.Errorf("Code[1] isn't in the current value %v", c)
+		}
+
+		elem = elem.Next()
+		c = elem.Value.(*code)
+
+		if c.label != "literal_value" || c.value != "2" || c.valueType != "string" || c.stringDelimiter != "\"" ||
+			c.line != 3 {
+			t.Errorf("Code[2] isn't in the current value %v", c)
+		}
+	}
+}
+
+func case18(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis()
+
+	codeStr = `
+		2a
+	`
+
+	err = lexicalAnalysis.Start([]rune(codeStr))
+
+	if err == nil {
+		t.Error("Invalid token 2a")
 	}
 }

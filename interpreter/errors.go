@@ -17,3 +17,15 @@ func lineBreakerInsideString(char string, currentLine int) error {
 func unexpectedToken(str string, currentLine int) error {
 	return fmt.Errorf("\"%v\" unexpected token at line %v", str, currentLine)
 }
+
+func attributionSymbolInvalidPosition(char string, currentLine int) error {
+	return fmt.Errorf("\"%v\" invalid position to attribution symbol at line %v", char, currentLine)
+}
+
+func numberInvalidPosition(char string, currentLine int) error {
+	return fmt.Errorf("\"%v\" invalid position to number at line %v", char, currentLine)
+}
+
+func identifierCharInvalidPosition(char string, currentLine int) error {
+	return fmt.Errorf("\"%v\" invalid position to identifier char at line %v", char, currentLine)
+}

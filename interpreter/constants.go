@@ -8,7 +8,7 @@ const stringValueType = "string"
 const booleanValueType = "boolean"
 
 // dictionary
-const lineBreaker = "\n"
+const lineBreakerChars = "\n" + "\r\n"
 const whiteSpacesChars = "\t" + " "
 const scapeChars = "\\"
 
@@ -29,19 +29,22 @@ const mathOperationsSymbols = sumSymbol +
 	modSymbol +
 	expSymbol
 
-const floatNumberSeparator = "."
-const stringDelimiters = "'" + "\""
+const floatNumberSeparatorSymbols = "."
+const stringDelimiterSymbols = "'" + "\""
 
 const positiveNumberSymbol = "+"
 const negativeNumberSymbol = "-"
 const numberSignalSymbols = positiveNumberSymbol + negativeNumberSymbol
 
-const symbols = mathOperationsSymbols +
-	floatNumberSeparator +
-	stringDelimiters +
-	numberSignalSymbols
+const attributionSymbols = "="
 
-const languageDictionary = lineBreaker +
+const symbols = mathOperationsSymbols +
+	floatNumberSeparatorSymbols +
+	stringDelimiterSymbols +
+	numberSignalSymbols +
+	attributionSymbols
+
+const languageDictionary = lineBreakerChars +
 	whiteSpacesChars +
 	scapeChars +
 	identifierChars +
@@ -53,3 +56,4 @@ const literalValueLabel = "literal_value"
 const mathOperationSymbolLabel = "math_operation_symbol"
 const numberSignalSymbolLabel = "number_signal_symbol"
 const identifierLabel = "identifier"
+const attributionSymbolLabel = "attribution_symbol"

@@ -29,5 +29,5 @@ func (c *interpreter) Start() error {
 		return err
 	}
 
-	return nil
+	return err
 }

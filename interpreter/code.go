@@ -43,6 +43,12 @@ func (c *code) setStringDelimiterSymbol(stringDelimiter string, line int) {
 	c.line = line
 }
 
+func (c *code) setAttributionSymbol(value string, line int) {
+	c.label = attributionSymbolLabel
+	c.value = value
+	c.line = line
+}
+
 func (c *code) setIdentifier(value string, line int) {
 	c.label = identifierLabel
 	c.value += value
@@ -57,7 +63,7 @@ func (c *code) isLiteralValue() bool {
 	return c.label == literalValueLabel
 }
 
-func (c *code) isNumberType() bool {
+func (c *code) isLiteralValueNumberType() bool {
 	return c.label == literalValueLabel &&
 		(c.valueType == intValueType ||
 			c.valueType == floatValueType ||
@@ -68,16 +74,11 @@ func (c *code) isIntNumberType() bool {
 	return c.valueType == intValueType
 }
 
-// func (c *code) isFloatingPointNumberType() bool {
-// 	return c.valueType == floatValueType ||
-// 		c.valueType == doubleValueType
-// }
-
 func (c *code) isStringType() bool {
 	return c.valueType == stringValueType
 }
 
-func (c *code) isAMathOperationSymbol() bool {
+func (c *code) isMathOperationSymbol() bool {
 	return c.label == mathOperationSymbolLabel
 }
 
@@ -85,7 +86,11 @@ func (c *code) isNumberSignalSymbol() bool {
 	return c.label == numberSignalSymbolLabel
 }
 
-func (c *code) isAIdentifier() bool {
+func (c *code) isAttributionSymbol() bool {
+	return c.label == attributionSymbolLabel
+}
+
+func (c *code) isIdentifier() bool {
 	return c.label == identifierLabel
 }
 
