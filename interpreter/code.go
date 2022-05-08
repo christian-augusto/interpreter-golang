@@ -55,6 +55,10 @@ func (c *code) setIdentifier(value string, line int) {
 	c.line = line
 }
 
+func (c *code) setKeyWord() {
+	c.label = keyWordLabel
+}
+
 func (c *code) isEmpty() bool {
 	return utils.StringIsEmpty(c.label)
 }
@@ -92,6 +96,10 @@ func (c *code) isAttributionSymbol() bool {
 
 func (c *code) isIdentifier() bool {
 	return c.label == identifierLabel
+}
+
+func (c *code) isKeyWord() bool {
+	return c.label == keyWordLabel
 }
 
 func (c *code) toString() string {

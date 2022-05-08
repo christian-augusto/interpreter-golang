@@ -13,6 +13,12 @@ const whiteSpacesChars = "\t" + " "
 const scapeChars = "\\"
 
 const identifierChars = "abcdefghijklsmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$"
+
+const keywords = intValueType +
+	floatValueType +
+	doubleValueType +
+	stringValueType
+
 const numbersChars = "012345679"
 
 const sumSymbol = "+"
@@ -57,3 +63,7 @@ const mathOperationSymbolLabel = "math_operation_symbol"
 const numberSignalSymbolLabel = "number_signal_symbol"
 const identifierLabel = "identifier"
 const attributionSymbolLabel = "attribution_symbol"
+const keyWordLabel = "keyword"
+
+// sentence labels
+const mathOperationSentenceLabel = "math_operation"
