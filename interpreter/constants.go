@@ -58,6 +58,7 @@ const languageDictionary = lineBreakerChars +
 	symbols
 
 // code labels
+const lineBreakerLabel = "line_breaker"
 const literalValueLabel = "literal_value"
 const mathOperationSymbolLabel = "math_operation_symbol"
 const numberSignalSymbolLabel = "number_signal_symbol"

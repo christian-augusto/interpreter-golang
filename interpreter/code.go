@@ -17,6 +17,11 @@ func newCode() *code {
 	return &code{}
 }
 
+func (c *code) setLineBreaker(line int) {
+	c.label = lineBreakerLabel
+	c.line = line
+}
+
 func (c *code) setLiteralValue(value string, valueType string, line int) {
 	c.label = literalValueLabel
 	c.value += value
@@ -70,7 +75,7 @@ func (c *code) isLiteralValue() bool {
 }
 
 func (c *code) isLiteralValueNumberType() bool {
-	return c.label == literalValueLabel &&
+	return c.isLiteralValue() &&
 		(c.valueType == intValueType ||
 			c.valueType == floatValueType ||
 			c.valueType == doubleValueType)
@@ -101,6 +106,10 @@ func (c *code) isIdentifier() bool {
 }
 
 func (c *code) isKeyword() bool {
+	return c.isTypeKeyword()
+}
+
+func (c *code) isTypeKeyword() bool {
 	return c.label == typeKeywordLabel
 }
 

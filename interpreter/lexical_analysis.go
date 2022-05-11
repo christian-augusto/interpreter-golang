@@ -198,11 +198,14 @@ func (la *lexicalAnalysis) processCharInsideString(char string, line int) (bool,
 
 func (la *lexicalAnalysis) processLineBreaker(char string, line int) (bool, error) {
 	if la.charIsLineBreaker(char) {
-		if la.currentCode.isMathOperationSymbol() ||
-			(la.currentCode.isLiteralValue() && la.currentCode.isLiteralValueNumberType()) ||
+		if la.currentCode.isEmpty() ||
+			la.currentCode.isLiteralValue() ||
+			la.currentCode.isMathOperationSymbol() ||
 			la.currentCode.isIdentifier() ||
 			la.currentCode.isKeyword() ||
 			la.currentCode.isAttributionSymbol() {
+			la.endCode()
+			la.currentCode.setLineBreaker(line - 1)
 			la.endCode()
 		}
 
