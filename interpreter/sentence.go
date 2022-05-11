@@ -2,22 +2,19 @@ package interpreter
 
 import (
 	"container/list"
-	"interpreter-golang/utils"
 )
 
 type sentence struct {
-	label string
-	codes *list.List
+	attributionSymbolOnSentence bool
+	codes                       *list.List
 }
 
 func newSentence() *sentence {
-	return &sentence{}
+	return &sentence{
+		attributionSymbolOnSentence: false,
+	}
 }
 
 func (s *sentence) isEmpty() bool {
-	return utils.StringIsEmpty(s.label)
-}
-
-func (s *sentence) setMathOperation() {
-	s.label = mathOperationSentenceLabel
+	return s.codes.Len() == 0
 }
