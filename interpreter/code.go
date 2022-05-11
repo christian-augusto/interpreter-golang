@@ -50,13 +50,15 @@ func (c *code) setAttributionSymbol(value string, line int) {
 }
 
 func (c *code) setIdentifier(value string, line int) {
-	c.label = identifierLabel
 	c.value += value
-	c.line = line
-}
 
-func (c *code) setKeyWord() {
-	c.label = keyWordLabel
+	if label := c.getIdentifierKeywordLabel(); label != "" {
+		c.label = label
+	} else {
+		c.label = identifierLabel
+	}
+
+	c.line = line
 }
 
 func (c *code) isEmpty() bool {
@@ -98,8 +100,25 @@ func (c *code) isIdentifier() bool {
 	return c.label == identifierLabel
 }
 
-func (c *code) isKeyWord() bool {
-	return c.label == keyWordLabel
+func (c *code) isKeyword() bool {
+	return c.label == typeKeywordLabel
+}
+
+func (c *code) getIdentifierKeywordLabel() string {
+	types := make([]string, 4)
+
+	types[0] = intValueType
+	types[1] = floatValueType
+	types[2] = doubleValueType
+	types[3] = stringValueType
+
+	for _, t := range types {
+		if c.value == t {
+			return typeKeywordLabel
+		}
+	}
+
+	return ""
 }
 
 func (c *code) toString() string {

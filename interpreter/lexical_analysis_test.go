@@ -24,6 +24,7 @@ func TestStart(t *testing.T) {
 	case17(t)
 	case18(t)
 	case19(t)
+	case20(t)
 }
 
 func case1(t *testing.T) {
@@ -719,7 +720,7 @@ func case19(t *testing.T) {
 		elem := lexicalAnalysis.allCodes.Front()
 		c := elem.Value.(*code)
 
-		if c.label != "keyword" || c.value != "int" || c.valueType != "" || c.stringDelimiter != "" ||
+		if c.label != "type_keyword" || c.value != "int" || c.valueType != "" || c.stringDelimiter != "" ||
 			c.line != 2 {
 			t.Errorf("Code[0] isn't in the current value %v", c)
 		}
@@ -739,5 +740,21 @@ func case19(t *testing.T) {
 			c.line != 3 {
 			t.Errorf("Code[2] isn't in the current value %v", c)
 		}
+	}
+}
+
+func case20(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis()
+
+	codeStr = `
+		+1+1
+	`
+
+	err = lexicalAnalysis.Start([]rune(codeStr))
+
+	if err == nil {
+		t.Error("Invalid token +1+")
 	}
 }

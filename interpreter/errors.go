@@ -15,7 +15,7 @@ func lineBreakerInsideString(char string, currentLine int) error {
 }
 
 func unexpectedToken(str string, currentLine int) error {
-	return fmt.Errorf("\"%v\" unexpected token at line %v", str, currentLine)
+	return fmt.Errorf("unexpected token \"%v\" at line %v", str, currentLine)
 }
 
 func attributionSymbolInvalidPosition(char string, currentLine int) error {

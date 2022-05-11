@@ -63,7 +63,7 @@ const mathOperationSymbolLabel = "math_operation_symbol"
 const numberSignalSymbolLabel = "number_signal_symbol"
 const identifierLabel = "identifier"
 const attributionSymbolLabel = "attribution_symbol"
-const keyWordLabel = "keyword"
+const typeKeywordLabel = "type_keyword"
 
 // sentence labels
 const mathOperationSentenceLabel = "math_operation"

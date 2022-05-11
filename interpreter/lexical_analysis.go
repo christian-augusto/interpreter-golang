@@ -123,23 +123,6 @@ func (la *lexicalAnalysis) charIsIdentifier(char string) bool {
 	return strings.Contains(identifierChars, char)
 }
 
-func (la *lexicalAnalysis) identifierIsKeyWord(identifier string) bool {
-	aux := make([]string, 4)
-
-	aux[0] = intValueType
-	aux[1] = floatValueType
-	aux[2] = doubleValueType
-	aux[3] = stringValueType
-
-	for _, k := range aux {
-		if identifier == k {
-			return true
-		}
-	}
-
-	return false
-}
-
 func (la *lexicalAnalysis) charIsAttributionSymbol(char string) bool {
 	return strings.Contains(attributionSymbols, char)
 }
@@ -218,7 +201,7 @@ func (la *lexicalAnalysis) processLineBreaker(char string, line int) (bool, erro
 		if la.currentCode.isMathOperationSymbol() ||
 			(la.currentCode.isLiteralValue() && la.currentCode.isLiteralValueNumberType()) ||
 			la.currentCode.isIdentifier() ||
-			la.currentCode.isKeyWord() ||
+			la.currentCode.isKeyword() ||
 			la.currentCode.isAttributionSymbol() {
 			la.endCode()
 		}
@@ -274,7 +257,8 @@ func (la *lexicalAnalysis) processSymbol(char string, line int) (bool, error) {
 		if la.charIsNumberSignal(char) {
 			if la.currentCode.isEmpty() {
 				la.currentCode.setNumberSignalSymbol(char, line)
-			} else if la.currentCode.isMathOperationSymbol() || la.currentCode.isNumberSignalSymbol() {
+			} else if la.currentCode.isMathOperationSymbol() || la.currentCode.isNumberSignalSymbol() ||
+				la.currentCode.isLiteralValue() {
 				return true, unexpectedToken(la.currentCode.value+char, line)
 			}
 		} else if la.charisMathOperationSymbol(char) {
@@ -312,12 +296,8 @@ func (la *lexicalAnalysis) processSymbol(char string, line int) (bool, error) {
 
 func (la *lexicalAnalysis) processIdentifierChar(char string, line int) (bool, error) {
 	if la.charIsIdentifier(char) {
-		if la.currentCode.isEmpty() || la.currentCode.isIdentifier() || la.currentCode.isKeyWord() {
+		if la.currentCode.isEmpty() || la.currentCode.isIdentifier() || la.currentCode.isKeyword() {
 			la.currentCode.setIdentifier(char, line)
-
-			if la.identifierIsKeyWord(la.currentCode.value) {
-				la.currentCode.setKeyWord()
-			}
 
 			return true, nil
 		} else if la.currentCode.isLiteralValueNumberType() {
