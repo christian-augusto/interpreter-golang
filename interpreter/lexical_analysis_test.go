@@ -934,3 +934,49 @@ func TestStart20(t *testing.T) {
 		t.Error("Invalid token +1+")
 	}
 }
+
+func TestStart21(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis()
+
+	codeStr = `
+
+
+	`
+
+	err = lexicalAnalysis.Start([]rune(codeStr))
+
+	if err != nil {
+		t.Error(err)
+	} else {
+		if lexicalAnalysis.allCodes.Len() != 3 {
+			t.Errorf("lexicalAnalysis.allCodes.Len() invalid value %v", lexicalAnalysis.allCodes.Len())
+			return
+		}
+
+		elem := lexicalAnalysis.allCodes.Front()
+		c := elem.Value.(*code)
+
+		if c.label != "line_breaker" || c.value != "" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 1 {
+			t.Errorf("Code[0] isn't in the current value %v", c)
+		}
+
+		elem = elem.Next()
+		c = elem.Value.(*code)
+
+		if c.label != "line_breaker" || c.value != "" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 2 {
+			t.Errorf("Code[1] isn't in the current value %v", c)
+		}
+
+		elem = elem.Next()
+		c = elem.Value.(*code)
+
+		if c.label != "line_breaker" || c.value != "" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 3 {
+			t.Errorf("Code[2] isn't in the current value %v", c)
+		}
+	}
+}

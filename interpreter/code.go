@@ -70,6 +70,10 @@ func (c *code) isEmpty() bool {
 	return utils.StringIsEmpty(c.label)
 }
 
+func (c *code) isLineBreaker() bool {
+	return c.label == lineBreakerLabel
+}
+
 func (c *code) isLiteralValue() bool {
 	return c.label == literalValueLabel
 }
