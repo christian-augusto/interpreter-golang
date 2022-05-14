@@ -30,9 +30,13 @@ func (c *code) setLiteralValue(value string, valueType string, line int) {
 }
 
 func (c *code) setMathOperationSymbol(value string, line int) {
-	c.label = mathOperationSymbolLabel
+	c.changeToMathOperationSymbol()
 	c.value = value
 	c.line = line
+}
+
+func (c *code) changeToMathOperationSymbol() {
+	c.label = mathOperationSymbolLabel
 }
 
 func (c *code) setNumberSignalSymbol(value string, line int) {

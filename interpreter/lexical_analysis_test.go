@@ -986,7 +986,7 @@ func TestStart22(t *testing.T) {
 	var codeStr string
 	lexicalAnalysis := newLexicalAnalysis()
 
-	codeStr = `1 + `
+	codeStr = `1 +`
 
 	err = lexicalAnalysis.Start([]rune(codeStr))
 

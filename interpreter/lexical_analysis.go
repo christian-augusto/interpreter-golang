@@ -171,6 +171,10 @@ func (la *lexicalAnalysis) escapedChar(char string) bool {
 
 func (la *lexicalAnalysis) endCode() {
 	if !la.currentCode.isEmpty() {
+		if la.currentCode.isNumberSignalSymbol() {
+			la.currentCode.changeToMathOperationSymbol()
+		}
+
 		la.allCodes.PushBack(la.currentCode)
 		la.currentCode = newCode()
 	}
