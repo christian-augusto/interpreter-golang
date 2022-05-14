@@ -102,11 +102,15 @@ func (la *lexicalAnalysis) Start(allCode []rune) error {
 
 	la.endCode()
 
+	fmt.Println("Lexical analysis")
+
 	for e1 := la.allCodes.Front(); e1 != nil; e1 = e1.Next() {
 		c := e1.Value.(*code)
 
 		fmt.Println(c.toString())
 	}
+
+	fmt.Print("\n\n\n")
 
 	return err
 }

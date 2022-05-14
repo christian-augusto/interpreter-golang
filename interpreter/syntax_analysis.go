@@ -30,17 +30,7 @@ func (sa *syntaxAnalysis) Start(allCodes *list.List) error {
 		code := element.Value.(*code)
 		processed := false
 
-		processed, err = sa.processIdentifier(code)
-
-		if err != nil {
-			return err
-		}
-
-		if processed {
-			continue
-		}
-
-		processed, err = sa.processTypeKeyword(code)
+		processed, err = sa.processLineBreaker(code)
 
 		if err != nil {
 			return err
@@ -60,7 +50,37 @@ func (sa *syntaxAnalysis) Start(allCodes *list.List) error {
 			continue
 		}
 
-		processed, err = sa.processAttributionSymbol(code)
+		processed, err = sa.processIdentifier(code)
+
+		if err != nil {
+			return err
+		}
+
+		if processed {
+			continue
+		}
+
+		processed, err = sa.processMathOperationSymbol(code, false)
+
+		if err != nil {
+			return err
+		}
+
+		if processed {
+			continue
+		}
+
+		processed, err = sa.processTypeKeyword(code, false)
+
+		if err != nil {
+			return err
+		}
+
+		if processed {
+			continue
+		}
+
+		processed, err = sa.processAttributionSymbol(code, false)
 
 		if err != nil {
 			return err
@@ -71,7 +91,13 @@ func (sa *syntaxAnalysis) Start(allCodes *list.List) error {
 		}
 	}
 
-	sa.endSentence()
+	err = sa.endSentence()
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Syntax analysis")
 
 	for e1 := sa.allSentences.Front(); e1 != nil; e1 = e1.Next() {
 		sent := e1.Value.(*sentence)
@@ -85,14 +111,39 @@ func (sa *syntaxAnalysis) Start(allCodes *list.List) error {
 		fmt.Print("\n\n")
 	}
 
+	fmt.Print("\n\n\n")
+
 	return err
 }
 
-func (sa *syntaxAnalysis) endSentence() {
+func (sa *syntaxAnalysis) endSentence() error {
 	if !sa.currentSentence.isEmpty() {
+		var err error = nil
+		lastCode := sa.currentSentence.codes.Back().Value.(*code)
+
+		_, err = sa.processMathOperationSymbol(lastCode, true)
+
+		if err != nil {
+			return err
+		}
+
+		_, err = sa.processTypeKeyword(lastCode, true)
+
+		if err != nil {
+			return err
+		}
+
+		_, err = sa.processAttributionSymbol(lastCode, true)
+
+		if err != nil {
+			return err
+		}
+
 		sa.allSentences.PushBack(sa.currentSentence)
 		sa.currentSentence = newSentence()
 	}
+
+	return nil
 }
 
 func (sa *syntaxAnalysis) pushCodeBack(code *code) {
@@ -100,16 +151,28 @@ func (sa *syntaxAnalysis) pushCodeBack(code *code) {
 	sa.previousCode = code
 }
 
+func (sa *syntaxAnalysis) processLineBreaker(code *code) (bool, error) {
+	if code.isLineBreaker() {
+		if sa.previousCode == nil ||
+			!sa.previousCode.isMathOperationSymbol() {
+			sa.endSentence()
+		}
+	}
+
+	return false, nil
+}
+
 func (sa *syntaxAnalysis) processLiteralValue(code *code) (bool, error) {
 	if code.isLiteralValue() {
-		if sa.previousCode.isMathOperationSymbol() ||
+		if sa.previousCode == nil ||
+			sa.previousCode.isMathOperationSymbol() ||
 			sa.previousCode.isAttributionSymbol() {
 
 			sa.pushCodeBack(code)
 
 			return true, nil
 		} else {
-			return true, fmt.Errorf("Literal value \"%v\" can't be after %v", code.value, sa.previousCode.value)
+			return true, syntaxAnalysisError(sa.previousCode.value, code.value)
 		}
 	}
 
@@ -118,7 +181,8 @@ func (sa *syntaxAnalysis) processLiteralValue(code *code) (bool, error) {
 
 func (sa *syntaxAnalysis) processIdentifier(code *code) (bool, error) {
 	if code.isIdentifier() {
-		if sa.previousCode.isTypeKeyword() ||
+		if sa.previousCode == nil ||
+			sa.previousCode.isTypeKeyword() ||
 			sa.previousCode.isMathOperationSymbol() ||
 			sa.previousCode.isAttributionSymbol() {
 
@@ -126,58 +190,71 @@ func (sa *syntaxAnalysis) processIdentifier(code *code) (bool, error) {
 
 			return true, nil
 		} else {
-			return true, fmt.Errorf("Identifier \"%v\" can't be after %v", code.value, sa.previousCode.value)
+			return true, syntaxAnalysisError(sa.previousCode.value, code.value)
 		}
 	}
 
 	return false, nil
 }
 
-func (sa *syntaxAnalysis) processTypeKeyword(code *code) (bool, error) {
-	if code.isTypeKeyword() {
-		sa.pushCodeBack(code)
+func (sa *syntaxAnalysis) processMathOperationSymbol(code *code, endingSentence bool) (bool, error) {
+	if code.isMathOperationSymbol() {
+		if endingSentence {
+			return true, syntaxAnalysisErrorEndingCode(code.value)
+		} else if sa.previousCode != nil &&
+			(sa.previousCode.isLiteralValue() ||
+				sa.previousCode.isIdentifier()) {
 
-		return true, nil
+			sa.pushCodeBack(code)
+
+			return true, nil
+		} else {
+			previousValue := emptyCodeValue
+
+			if sa.previousCode != nil {
+				previousValue = sa.previousCode.value
+			}
+
+			return true, syntaxAnalysisError(previousValue, code.value)
+		}
 	}
 
 	return false, nil
 }
 
-func (sa *syntaxAnalysis) processMathOperationSymbol(code *code) (bool, error) {
-	if code.isMathOperationSymbol() {
-		if sa.previousCode.isLiteralValue() ||
+func (sa *syntaxAnalysis) processTypeKeyword(code *code, endingSentence bool) (bool, error) {
+	if code.isTypeKeyword() {
+		if endingSentence {
+			return true, syntaxAnalysisErrorEndingCode(code.value)
+		} else if sa.previousCode == nil ||
+			code.isTypeKeyword() {
+			sa.pushCodeBack(code)
+
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (sa *syntaxAnalysis) processAttributionSymbol(code *code, endingSentence bool) (bool, error) {
+	if code.isAttributionSymbol() {
+		if endingSentence {
+			return true, syntaxAnalysisErrorEndingCode(code.value)
+		} else if sa.previousCode != nil &&
 			sa.previousCode.isIdentifier() {
 
 			sa.pushCodeBack(code)
 
 			return true, nil
 		} else {
-			return true, fmt.Errorf("Math operation symbol \"%v\" can't be after %v", code.value, sa.previousCode.value)
-		}
-	}
+			previousValue := emptyCodeValue
 
-	return false, nil
-}
+			if sa.previousCode != nil {
+				previousValue = sa.previousCode.value
+			}
 
-func (sa *syntaxAnalysis) processAttributionSymbol(code *code) (bool, error) {
-	if code.isAttributionSymbol() {
-		if sa.previousCode.isIdentifier() {
-
-			sa.pushCodeBack(code)
-
-			return true, nil
-		} else {
-			return true, fmt.Errorf("Math operation symbol \"%v\" can't be after %v", code.value, sa.previousCode.value)
-		}
-	}
-
-	return false, nil
-}
-
-func (sa *syntaxAnalysis) processLineBreaker(code *code) (bool, error) {
-	if code.isLineBreaker() {
-		if !sa.previousCode.isMathOperationSymbol() {
-			sa.endSentence()
+			return true, syntaxAnalysisError(previousValue, code.value)
 		}
 	}
 

@@ -980,3 +980,38 @@ func TestStart21(t *testing.T) {
 		}
 	}
 }
+
+func TestStart22(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis()
+
+	codeStr = `1 + `
+
+	err = lexicalAnalysis.Start([]rune(codeStr))
+
+	if err != nil {
+		t.Error(err)
+	} else {
+		if lexicalAnalysis.allCodes.Len() != 2 {
+			t.Errorf("lexicalAnalysis.allCodes.Len() invalid value %v", lexicalAnalysis.allCodes.Len())
+			return
+		}
+
+		elem := lexicalAnalysis.allCodes.Front()
+		c := elem.Value.(*code)
+
+		if c.label != "literal_value" || c.value != "1" || c.valueType != "int" || c.stringDelimiter != "" ||
+			c.line != 1 {
+			t.Errorf("Code[0] isn't in the current value %v", c)
+		}
+
+		elem = elem.Next()
+		c = elem.Value.(*code)
+
+		if c.label != "math_operation_symbol" || c.value != "+" || c.valueType != "" || c.stringDelimiter != "" ||
+			c.line != 1 {
+			t.Errorf("Code[1] isn't in the current value %v", c)
+		}
+	}
+}

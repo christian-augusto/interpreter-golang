@@ -12,6 +12,7 @@ type sentence struct {
 func newSentence() *sentence {
 	return &sentence{
 		attributionSymbolOnSentence: false,
+		codes:                       list.New(),
 	}
 }
 

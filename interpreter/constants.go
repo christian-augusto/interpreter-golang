@@ -68,3 +68,6 @@ const typeKeywordLabel = "type_keyword"
 
 // sentence labels
 const mathOperationSentenceLabel = "math_operation"
+
+// empty code value
+const emptyCodeValue = "empty"

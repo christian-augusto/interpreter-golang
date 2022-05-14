@@ -29,3 +29,11 @@ func numberInvalidPosition(char string, currentLine int) error {
 func identifierCharInvalidPosition(char string, currentLine int) error {
 	return fmt.Errorf("\"%v\" invalid position to identifier char at line %v", char, currentLine)
 }
+
+func syntaxAnalysisError(previousValue string, currentValue string) error {
+	return fmt.Errorf("Code %v has invalid syntax position after %v", currentValue, previousValue)
+}
+
+func syntaxAnalysisErrorEndingCode(currentValue string) error {
+	return fmt.Errorf("Code %v can't end sentence", currentValue)
+}
