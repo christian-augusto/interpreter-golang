@@ -6,27 +6,26 @@ import (
 )
 
 type syntaxAnalysis struct {
-	allCodes        *list.List
 	allSentences    *list.List
 	currentSentence *sentence
 	previousCode    *code
+	showLogs        bool
 }
 
 // syntaxAnalysis constructor
-func newSyntaxAnalysis() *syntaxAnalysis {
+func newSyntaxAnalysis(showLogs bool) *syntaxAnalysis {
 	return &syntaxAnalysis{
 		allSentences:    list.New(),
 		currentSentence: newSentence(),
 		previousCode:    nil,
+		showLogs:        showLogs,
 	}
 }
 
 func (sa *syntaxAnalysis) Start(allCodes *list.List) error {
 	var err error = nil
 
-	sa.allCodes = allCodes
-
-	for element := sa.allCodes.Front(); element != nil; element = element.Next() {
+	for element := allCodes.Front(); element != nil; element = element.Next() {
 		code := element.Value.(*code)
 		processed := false
 
@@ -97,21 +96,23 @@ func (sa *syntaxAnalysis) Start(allCodes *list.List) error {
 		return err
 	}
 
-	fmt.Println("Syntax analysis")
+	if sa.showLogs {
+		fmt.Println("Syntax analysis")
 
-	for e1 := sa.allSentences.Front(); e1 != nil; e1 = e1.Next() {
-		sent := e1.Value.(*sentence)
+		for e1 := sa.allSentences.Front(); e1 != nil; e1 = e1.Next() {
+			sent := e1.Value.(*sentence)
 
-		for e1 := sent.codes.Front(); e1 != nil; e1 = e1.Next() {
-			c := e1.Value.(*code)
+			for e1 := sent.codes.Front(); e1 != nil; e1 = e1.Next() {
+				c := e1.Value.(*code)
 
-			fmt.Println(c.toString())
+				fmt.Println(c.toString())
+			}
+
+			fmt.Print("\n\n")
 		}
 
-		fmt.Print("\n\n")
+		fmt.Print("\n\n\n")
 	}
-
-	fmt.Print("\n\n\n")
 
 	return err
 }
@@ -171,9 +172,9 @@ func (sa *syntaxAnalysis) processLiteralValue(code *code) (bool, error) {
 			sa.pushCodeBack(code)
 
 			return true, nil
-		} else {
-			return true, syntaxAnalysisError(sa.previousCode.value, code.value)
 		}
+
+		return true, syntaxAnalysisError(sa.previousCode.value, code.value)
 	}
 
 	return false, nil
@@ -189,9 +190,9 @@ func (sa *syntaxAnalysis) processIdentifier(code *code) (bool, error) {
 			sa.pushCodeBack(code)
 
 			return true, nil
-		} else {
-			return true, syntaxAnalysisError(sa.previousCode.value, code.value)
 		}
+
+		return true, syntaxAnalysisError(sa.previousCode.value, code.value)
 	}
 
 	return false, nil
@@ -208,15 +209,15 @@ func (sa *syntaxAnalysis) processMathOperationSymbol(code *code, endingSentence 
 			sa.pushCodeBack(code)
 
 			return true, nil
-		} else {
-			previousValue := emptyCodeValue
-
-			if sa.previousCode != nil {
-				previousValue = sa.previousCode.value
-			}
-
-			return true, syntaxAnalysisError(previousValue, code.value)
 		}
+
+		previousValue := emptyCodeValue
+
+		if sa.previousCode != nil {
+			previousValue = sa.previousCode.value
+		}
+
+		return true, syntaxAnalysisError(previousValue, code.value)
 	}
 
 	return false, nil
@@ -232,6 +233,8 @@ func (sa *syntaxAnalysis) processTypeKeyword(code *code, endingSentence bool) (b
 
 			return true, nil
 		}
+
+		return true, syntaxAnalysisError(sa.previousCode.value, code.value)
 	}
 
 	return false, nil
@@ -247,15 +250,15 @@ func (sa *syntaxAnalysis) processAttributionSymbol(code *code, endingSentence bo
 			sa.pushCodeBack(code)
 
 			return true, nil
-		} else {
-			previousValue := emptyCodeValue
-
-			if sa.previousCode != nil {
-				previousValue = sa.previousCode.value
-			}
-
-			return true, syntaxAnalysisError(previousValue, code.value)
 		}
+
+		previousValue := emptyCodeValue
+
+		if sa.previousCode != nil {
+			previousValue = sa.previousCode.value
+		}
+
+		return true, syntaxAnalysisError(previousValue, code.value)
 	}
 
 	return false, nil

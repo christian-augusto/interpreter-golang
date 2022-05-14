@@ -9,13 +9,15 @@ import (
 type lexicalAnalysis struct {
 	allCodes    *list.List
 	currentCode *code
+	showLogs    bool
 }
 
 // lexicalAnalysis constructor
-func newLexicalAnalysis() *lexicalAnalysis {
+func newLexicalAnalysis(showLogs bool) *lexicalAnalysis {
 	return &lexicalAnalysis{
 		allCodes:    list.New(),
 		currentCode: newCode(),
+		showLogs:    showLogs,
 	}
 }
 
@@ -102,15 +104,17 @@ func (la *lexicalAnalysis) Start(allCode []rune) error {
 
 	la.endCode()
 
-	fmt.Println("Lexical analysis")
+	if la.showLogs {
+		fmt.Println("Lexical analysis")
 
-	for e1 := la.allCodes.Front(); e1 != nil; e1 = e1.Next() {
-		c := e1.Value.(*code)
+		for e1 := la.allCodes.Front(); e1 != nil; e1 = e1.Next() {
+			c := e1.Value.(*code)
 
-		fmt.Println(c.toString())
+			fmt.Println(c.toString())
+		}
+
+		fmt.Print("\n\n\n")
 	}
-
-	fmt.Print("\n\n\n")
 
 	return err
 }

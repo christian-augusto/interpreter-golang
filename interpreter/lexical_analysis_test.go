@@ -4,10 +4,10 @@ import (
 	"testing"
 )
 
-func TestStart1(t *testing.T) {
+func TestLexicalAnalysis1(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `1 + 2`
 
@@ -47,10 +47,10 @@ func TestStart1(t *testing.T) {
 	}
 }
 
-func TestStart2(t *testing.T) {
+func TestLexicalAnalysis2(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `
 		"a+" + "a"
@@ -125,10 +125,10 @@ func TestStart2(t *testing.T) {
 	}
 }
 
-func TestStart3(t *testing.T) {
+func TestLexicalAnalysis3(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `"'"`
 
@@ -152,10 +152,10 @@ func TestStart3(t *testing.T) {
 	}
 }
 
-func TestStart4(t *testing.T) {
+func TestLexicalAnalysis4(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `"\""`
 
@@ -179,10 +179,10 @@ func TestStart4(t *testing.T) {
 	}
 }
 
-func TestStart5(t *testing.T) {
+func TestLexicalAnalysis5(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `
 		2
@@ -197,10 +197,10 @@ func TestStart5(t *testing.T) {
 	}
 }
 
-func TestStart6(t *testing.T) {
+func TestLexicalAnalysis6(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `
 		.
@@ -214,10 +214,10 @@ func TestStart6(t *testing.T) {
 	}
 }
 
-func TestStart7(t *testing.T) {
+func TestLexicalAnalysis7(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `
 		1 + 1
@@ -440,10 +440,10 @@ func TestStart7(t *testing.T) {
 	}
 }
 
-func TestStart8(t *testing.T) {
+func TestLexicalAnalysis8(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `5.555.`
 
@@ -454,10 +454,10 @@ func TestStart8(t *testing.T) {
 	}
 }
 
-func TestStart9(t *testing.T) {
+func TestLexicalAnalysis9(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `1 - -2`
 
@@ -497,10 +497,10 @@ func TestStart9(t *testing.T) {
 	}
 }
 
-func TestStart10(t *testing.T) {
+func TestLexicalAnalysis10(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `1 *-2`
 
@@ -511,10 +511,10 @@ func TestStart10(t *testing.T) {
 	}
 }
 
-func TestStart11(t *testing.T) {
+func TestLexicalAnalysis11(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `1 * -2`
 
@@ -554,10 +554,10 @@ func TestStart11(t *testing.T) {
 	}
 }
 
-func TestStart12(t *testing.T) {
+func TestLexicalAnalysis12(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `1 + "2"`
 
@@ -597,10 +597,10 @@ func TestStart12(t *testing.T) {
 	}
 }
 
-func TestStart13(t *testing.T) {
+func TestLexicalAnalysis13(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `a2 = 2`
 
@@ -640,10 +640,10 @@ func TestStart13(t *testing.T) {
 	}
 }
 
-func TestStart14(t *testing.T) {
+func TestLexicalAnalysis14(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `a2= 2`
 
@@ -654,10 +654,10 @@ func TestStart14(t *testing.T) {
 	}
 }
 
-func TestStart15(t *testing.T) {
+func TestLexicalAnalysis15(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `a = "2"`
 
@@ -697,10 +697,10 @@ func TestStart15(t *testing.T) {
 	}
 }
 
-func TestStart16(t *testing.T) {
+func TestLexicalAnalysis16(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `
 		a
@@ -767,10 +767,10 @@ func TestStart16(t *testing.T) {
 	}
 }
 
-func TestStart17(t *testing.T) {
+func TestLexicalAnalysis17(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `
 		a2
@@ -837,10 +837,10 @@ func TestStart17(t *testing.T) {
 	}
 }
 
-func TestStart18(t *testing.T) {
+func TestLexicalAnalysis18(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `2a`
 
@@ -851,10 +851,10 @@ func TestStart18(t *testing.T) {
 	}
 }
 
-func TestStart19(t *testing.T) {
+func TestLexicalAnalysis19(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `
 		int
@@ -921,10 +921,10 @@ func TestStart19(t *testing.T) {
 	}
 }
 
-func TestStart20(t *testing.T) {
+func TestLexicalAnalysis20(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `+1+1`
 
@@ -935,10 +935,10 @@ func TestStart20(t *testing.T) {
 	}
 }
 
-func TestStart21(t *testing.T) {
+func TestLexicalAnalysis21(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `
 
@@ -981,10 +981,10 @@ func TestStart21(t *testing.T) {
 	}
 }
 
-func TestStart22(t *testing.T) {
+func TestLexicalAnalysis22(t *testing.T) {
 	var err error
 	var codeStr string
-	lexicalAnalysis := newLexicalAnalysis()
+	lexicalAnalysis := newLexicalAnalysis(false)
 
 	codeStr = `1 +`
 

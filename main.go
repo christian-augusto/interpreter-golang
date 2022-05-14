@@ -18,6 +18,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	showLogs := false
+
+	if len(os.Args) > 2 && os.Args[2] == "showLogs" {
+		showLogs = true
+	}
+
 	filePath := os.Args[1]
 	var codeBytes []byte
 	var code string
@@ -31,9 +37,7 @@ func main() {
 
 	code = string(codeBytes)
 
-	fmt.Println(code)
-
-	inter := interpreter.NewInterpreter(code)
+	inter := interpreter.NewInterpreter(code, showLogs)
 
 	err = inter.Start()
 

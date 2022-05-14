@@ -6,11 +6,11 @@ type interpreter struct {
 	syntaxAnalysis  *syntaxAnalysis
 }
 
-func NewInterpreter(allCode string) *interpreter {
+func NewInterpreter(allCode string, showLogs bool) *interpreter {
 	return &interpreter{
 		allCode:         []rune(allCode),
-		lexicalAnalysis: newLexicalAnalysis(),
-		syntaxAnalysis:  newSyntaxAnalysis(),
+		lexicalAnalysis: newLexicalAnalysis(showLogs),
+		syntaxAnalysis:  newSyntaxAnalysis(showLogs),
 	}
 }
 
