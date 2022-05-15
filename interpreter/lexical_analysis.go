@@ -132,14 +132,22 @@ func (la *lexicalAnalysis) charIsIdentifier(char string) bool {
 }
 
 func (la *lexicalAnalysis) charIsAttributionSymbol(char string) bool {
-	return strings.Contains(attributionSymbols, char)
+	return strings.Contains(attributionSymbol, char)
 }
 
-func (la *lexicalAnalysis) charisNumber(char string) bool {
+func (la *lexicalAnalysis) charIsOpenPrioritySymbol(char string) bool {
+	return openPrioritySymbol == char
+}
+
+func (la *lexicalAnalysis) charIsClosePrioritySymbol(char string) bool {
+	return closePrioritySymbol == char
+}
+
+func (la *lexicalAnalysis) charIsNumber(char string) bool {
 	return strings.Contains(numbersChars, char)
 }
 
-func (la *lexicalAnalysis) charisMathOperationSymbol(char string) bool {
+func (la *lexicalAnalysis) charIsMathOperationSymbol(char string) bool {
 	return strings.Contains(mathOperationsSymbols, char)
 }
 
@@ -151,15 +159,15 @@ func (la *lexicalAnalysis) charIsNumberSignal(char string) bool {
 	return strings.Contains(numberSignalSymbols, char)
 }
 
-func (la *lexicalAnalysis) charisFloatNumberSeparator(char string) bool {
-	return strings.Contains(floatNumberSeparatorSymbols, char)
+func (la *lexicalAnalysis) charIsFloatNumberSeparator(char string) bool {
+	return strings.Contains(floatNumberSeparatorSymbol, char)
 }
 
-func (la *lexicalAnalysis) charisStringDelimiter(char string) bool {
+func (la *lexicalAnalysis) charIsStringDelimiter(char string) bool {
 	return strings.Contains(stringDelimiterSymbols, char)
 }
 
-func (la *lexicalAnalysis) charisEcapeChar(char string) bool {
+func (la *lexicalAnalysis) charIsEcapeChar(char string) bool {
 	return strings.Contains(scapeChars, char)
 }
 
@@ -170,7 +178,7 @@ func (la *lexicalAnalysis) charIsInDictionary(char string) bool {
 func (la *lexicalAnalysis) escapedChar(char string) bool {
 	valueR := []rune(la.currentCode.value)
 
-	return la.charisEcapeChar(string(valueR[len(valueR)-1]))
+	return la.charIsEcapeChar(string(valueR[len(valueR)-1]))
 }
 
 func (la *lexicalAnalysis) endCode() {
@@ -186,11 +194,9 @@ func (la *lexicalAnalysis) endCode() {
 
 func (la *lexicalAnalysis) processCharInsideString(char string, line int) (bool, error) {
 	if la.currentCode.isLiteralValue() && la.currentCode.isStringType() {
-		if la.charisStringDelimiter(char) && char == la.currentCode.stringDelimiter {
+		if la.charIsStringDelimiter(char) && char == la.currentCode.stringDelimiter {
 			if la.escapedChar(char) {
 				la.currentCode.setLiteralValue(char, la.currentCode.valueType, line)
-
-				return true, nil
 			} else {
 				return false, nil
 			}
@@ -200,9 +206,9 @@ func (la *lexicalAnalysis) processCharInsideString(char string, line int) (bool,
 			}
 
 			la.currentCode.setLiteralValue(char, la.currentCode.valueType, line)
-
-			return true, nil
 		}
+
+		return true, nil
 	}
 
 	return false, nil
@@ -216,7 +222,8 @@ func (la *lexicalAnalysis) processLineBreaker(char string, line int) (bool, erro
 			la.currentCode.isMathOperationSymbol() ||
 			la.currentCode.isIdentifier() ||
 			la.currentCode.isKeyword() ||
-			la.currentCode.isAttributionSymbol() {
+			la.currentCode.isAttributionSymbol() ||
+			la.currentCode.isPrioritySymbol() {
 			la.endCode()
 			la.currentCode.setLineBreaker(line - 1)
 			la.endCode()
@@ -243,8 +250,12 @@ func (la *lexicalAnalysis) processWhiteSpace(char string, line int) (bool, error
 }
 
 func (la *lexicalAnalysis) processNumber(char string, line int) (bool, error) {
-	if la.charisNumber(char) {
-		if la.currentCode.isEmpty() || la.currentCode.isNumberSignalSymbol() {
+	if la.charIsNumber(char) {
+		if la.currentCode.isEmpty() || la.currentCode.isNumberSignalSymbol() || la.currentCode.isPrioritySymbol() {
+			if la.currentCode.isPrioritySymbol() {
+				la.endCode()
+			}
+
 			la.currentCode.setLiteralValue(char, intValueType, line)
 		} else if la.currentCode.isLiteralValue() {
 			valueType := intValueType
@@ -277,14 +288,14 @@ func (la *lexicalAnalysis) processSymbol(char string, line int) (bool, error) {
 				la.currentCode.isLiteralValue() {
 				return true, unexpectedToken(la.currentCode.value+char, line)
 			}
-		} else if la.charisMathOperationSymbol(char) {
+		} else if la.charIsMathOperationSymbol(char) {
 			if la.currentCode.isMathOperationSymbol() || la.currentCode.isNumberSignalSymbol() {
 				return true, unexpectedToken(la.currentCode.value+char, line)
 			}
 
 			la.endCode()
 			la.currentCode.setMathOperationSymbol(char, line)
-		} else if la.charisStringDelimiter(char) {
+		} else if la.charIsStringDelimiter(char) {
 			if la.currentCode.isEmpty() {
 				la.currentCode.setStringDelimiterSymbol(char, line)
 			} else if char == la.currentCode.stringDelimiter {
@@ -292,7 +303,7 @@ func (la *lexicalAnalysis) processSymbol(char string, line int) (bool, error) {
 			} else {
 				la.currentCode.setLiteralValue(char, la.currentCode.valueType, line)
 			}
-		} else if la.charisFloatNumberSeparator(char) {
+		} else if la.charIsFloatNumberSeparator(char) {
 			if !(la.currentCode.isLiteralValue() && la.currentCode.isIntNumberType()) {
 				return true, floatNumberSeparatorInvalidPosition(char, line)
 			}
@@ -304,7 +315,17 @@ func (la *lexicalAnalysis) processSymbol(char string, line int) (bool, error) {
 			} else {
 				return true, attributionSymbolInvalidPosition(char, line)
 			}
+		} else if la.charIsOpenPrioritySymbol(char) {
+			la.endCode()
+			la.currentCode.setOpenPrioritySymbol(char, line)
+			la.endCode()
+		} else if la.charIsClosePrioritySymbol(char) {
+			la.endCode()
+			la.currentCode.setClosePrioritySymbol(char, line)
+			la.endCode()
 		}
+
+		return true, nil
 	}
 
 	return false, nil
@@ -312,13 +333,20 @@ func (la *lexicalAnalysis) processSymbol(char string, line int) (bool, error) {
 
 func (la *lexicalAnalysis) processIdentifierChar(char string, line int) (bool, error) {
 	if la.charIsIdentifier(char) {
-		if la.currentCode.isEmpty() || la.currentCode.isIdentifier() || la.currentCode.isKeyword() {
-			la.currentCode.setIdentifier(char, line)
+		if la.currentCode.isEmpty() ||
+			la.currentCode.isIdentifier() ||
+			la.currentCode.isKeyword() ||
+			la.currentCode.isOpenPrioritySymbol() {
+			if la.currentCode.isOpenPrioritySymbol() {
+				la.endCode()
+			}
 
-			return true, nil
+			la.currentCode.setIdentifier(char, line)
 		} else if la.currentCode.isLiteralValueNumberType() {
 			return true, identifierCharInvalidPosition(char, line)
 		}
+
+		return true, nil
 	}
 
 	return false, nil

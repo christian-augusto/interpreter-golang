@@ -8,6 +8,8 @@ import (
 	"os"
 )
 
+const enableLogsArg = "showLogs"
+
 func main() {
 	var logger dependencies.Logger = logger.NewLogger()
 	var err error
@@ -20,7 +22,7 @@ func main() {
 
 	showLogs := false
 
-	if len(os.Args) > 2 && os.Args[2] == "showLogs" {
+	if len(os.Args) > 2 && os.Args[2] == enableLogsArg {
 		showLogs = true
 	}
 

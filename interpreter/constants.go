@@ -35,20 +35,27 @@ const mathOperationsSymbols = sumSymbol +
 	modSymbol +
 	expSymbol
 
-const floatNumberSeparatorSymbols = "."
+const floatNumberSeparatorSymbol = "."
 const stringDelimiterSymbols = "'" + "\""
 
 const positiveNumberSymbol = "+"
 const negativeNumberSymbol = "-"
 const numberSignalSymbols = positiveNumberSymbol + negativeNumberSymbol
 
-const attributionSymbols = "="
+const attributionSymbol = "="
+
+const openPrioritySymbol = "("
+const closePrioritySymbol = ")"
+
+const prioritySymbols = openPrioritySymbol +
+	closePrioritySymbol
 
 const symbols = mathOperationsSymbols +
-	floatNumberSeparatorSymbols +
+	floatNumberSeparatorSymbol +
 	stringDelimiterSymbols +
 	numberSignalSymbols +
-	attributionSymbols
+	attributionSymbol +
+	prioritySymbols
 
 const languageDictionary = lineBreakerChars +
 	whiteSpacesChars +
@@ -65,6 +72,8 @@ const numberSignalSymbolLabel = "number_signal_symbol"
 const identifierLabel = "identifier"
 const attributionSymbolLabel = "attribution_symbol"
 const typeKeywordLabel = "type_keyword"
+const openPrioritySymbolLabel = "open_priority_symbol"
+const closePrioritySymbolLabel = "close_priority_symbol"
 
 // sentence labels
 const mathOperationSentenceLabel = "math_operation"

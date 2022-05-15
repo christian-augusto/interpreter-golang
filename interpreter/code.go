@@ -70,6 +70,18 @@ func (c *code) setIdentifier(value string, line int) {
 	c.line = line
 }
 
+func (c *code) setOpenPrioritySymbol(value string, line int) {
+	c.label = openPrioritySymbolLabel
+	c.value = value
+	c.line = line
+}
+
+func (c *code) setClosePrioritySymbol(value string, line int) {
+	c.label = closePrioritySymbolLabel
+	c.value = value
+	c.line = line
+}
+
 func (c *code) isEmpty() bool {
 	return utils.StringIsEmpty(c.label)
 }
@@ -107,6 +119,18 @@ func (c *code) isNumberSignalSymbol() bool {
 
 func (c *code) isAttributionSymbol() bool {
 	return c.label == attributionSymbolLabel
+}
+
+func (c *code) isPrioritySymbol() bool {
+	return c.isOpenPrioritySymbol() || c.isClosePrioritySymbol()
+}
+
+func (c *code) isOpenPrioritySymbol() bool {
+	return c.label == openPrioritySymbolLabel
+}
+
+func (c *code) isClosePrioritySymbol() bool {
+	return c.label == closePrioritySymbolLabel
 }
 
 func (c *code) isIdentifier() bool {
