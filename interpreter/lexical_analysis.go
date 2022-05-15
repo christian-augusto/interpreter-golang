@@ -7,17 +7,17 @@ import (
 )
 
 type lexicalAnalysis struct {
+	showLogs    bool
 	allCodes    *list.List
 	currentCode *code
-	showLogs    bool
 }
 
 // lexicalAnalysis constructor
 func newLexicalAnalysis(showLogs bool) *lexicalAnalysis {
 	return &lexicalAnalysis{
+		showLogs:    showLogs,
 		allCodes:    list.New(),
 		currentCode: newCode(),
-		showLogs:    showLogs,
 	}
 }
 

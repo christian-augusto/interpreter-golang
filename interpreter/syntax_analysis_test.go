@@ -164,3 +164,73 @@ func TestSyntaxAnalysis8(t *testing.T) {
 		t.Errorf("Code int (type keyword) can't end sentence")
 	}
 }
+
+func TestSyntaxAnalysis9(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis(false)
+	syntaxAnalysis := newSyntaxAnalysis(false)
+
+	codeStr = `int a = (3 + 3)`
+
+	lexicalAnalysis.Start([]rune(codeStr))
+	err = syntaxAnalysis.Start(lexicalAnalysis.allCodes)
+
+	if err != nil {
+		t.Error(err)
+	} else {
+		if syntaxAnalysis.allSentences.Len() != 1 {
+			t.Errorf("syntaxAnalysis.allSentences.Len() invalid value %v", syntaxAnalysis.allSentences.Len())
+			return
+		}
+
+		sentence := syntaxAnalysis.allSentences.Front().Value.(*sentence)
+
+		if sentence.codes.Len() != 8 {
+			t.Errorf("sentence.codes.Len() invalid value %v", sentence.codes.Len())
+		}
+	}
+}
+
+func TestSyntaxAnalysis10(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis(false)
+	syntaxAnalysis := newSyntaxAnalysis(false)
+
+	codeStr = `int a = (3 + )`
+
+	lexicalAnalysis.Start([]rune(codeStr))
+	err = syntaxAnalysis.Start(lexicalAnalysis.allCodes)
+
+	if err == nil {
+		t.Errorf("Code ) (close_priority_symbol) has invalid syntax position after + (math_operation_symbol)")
+	}
+}
+
+func TestSyntaxAnalysis11(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis(false)
+	syntaxAnalysis := newSyntaxAnalysis(false)
+
+	codeStr = `a(3 + 3)`
+
+	lexicalAnalysis.Start([]rune(codeStr))
+	err = syntaxAnalysis.Start(lexicalAnalysis.allCodes)
+
+	if err != nil {
+		t.Error(err)
+	} else {
+		if syntaxAnalysis.allSentences.Len() != 1 {
+			t.Errorf("syntaxAnalysis.allSentences.Len() invalid value %v", syntaxAnalysis.allSentences.Len())
+			return
+		}
+
+		sentence := syntaxAnalysis.allSentences.Front().Value.(*sentence)
+
+		if sentence.codes.Len() != 6 {
+			t.Errorf("sentence.codes.Len() invalid value %v", sentence.codes.Len())
+		}
+	}
+}

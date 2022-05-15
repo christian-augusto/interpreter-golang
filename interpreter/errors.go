@@ -34,10 +34,32 @@ func prioritySymbolInvalidPosition(char string, currentLine int) error {
 	return fmt.Errorf("Invalid position to priority symbol %v at line %v", char, currentLine)
 }
 
-func syntaxAnalysisError(previousValue string, currentValue string) error {
-	return fmt.Errorf("Code %v has invalid syntax position after %v", currentValue, previousValue)
+func syntaxAnalysisError(previousCode *code, currentCode *code) error {
+	previousCodeValue := "empty"
+	previousCodeLabel := "empty"
+
+	if previousCode != nil {
+		previousCodeValue = previousCode.value
+		previousCodeLabel = previousCode.label
+	}
+
+	return fmt.Errorf(
+		"Code %v (%v) has invalid syntax position after %v (%v)",
+		currentCode.value, currentCode.label, previousCodeValue, previousCodeLabel,
+	)
 }
 
 func syntaxAnalysisErrorEndingCode(currentValue string) error {
 	return fmt.Errorf("Code %v can't end sentence", currentValue)
+}
+
+func syntaxAnalysisPriorityNotClosed(line int) error {
+	return fmt.Errorf("Sentence started at line %v has unclosed priority", line)
+}
+
+func syntaxAnalysisPriorityNotOpened(currentCode *code) error {
+	return fmt.Errorf(
+		"Code %v (%v) is closing a unopened priority at line %v",
+		currentCode.value, currentCode.label, currentCode.line,
+	)
 }
