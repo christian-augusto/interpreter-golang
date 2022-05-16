@@ -234,3 +234,119 @@ func TestSyntaxAnalysis11(t *testing.T) {
 		}
 	}
 }
+
+func TestSyntaxAnalysis12(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis(false)
+	syntaxAnalysis := newSyntaxAnalysis(false)
+
+	codeStr = `
+		int
+		a
+	`
+
+	lexicalAnalysis.Start([]rune(codeStr))
+	err = syntaxAnalysis.Start(lexicalAnalysis.allCodes)
+
+	if err == nil {
+		t.Errorf("Invalid attribution syntax sentence")
+	}
+}
+
+func TestSyntaxAnalysis13(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis(false)
+	syntaxAnalysis := newSyntaxAnalysis(false)
+
+	codeStr = `int a + a = 2`
+
+	lexicalAnalysis.Start([]rune(codeStr))
+	err = syntaxAnalysis.Start(lexicalAnalysis.allCodes)
+
+	if err == nil {
+		t.Errorf("Invalid attribution syntax sentence")
+	}
+}
+
+func TestSyntaxAnalysis14(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis(false)
+	syntaxAnalysis := newSyntaxAnalysis(false)
+
+	codeStr = `
+		int a
+		= 2
+	`
+
+	lexicalAnalysis.Start([]rune(codeStr))
+	err = syntaxAnalysis.Start(lexicalAnalysis.allCodes)
+
+	if err == nil {
+		t.Errorf("Invalid attribution syntax sentence")
+	}
+}
+
+func TestSyntaxAnalysis15(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis(false)
+	syntaxAnalysis := newSyntaxAnalysis(false)
+
+	codeStr = `
+		int a =
+		2
+	`
+
+	lexicalAnalysis.Start([]rune(codeStr))
+	err = syntaxAnalysis.Start(lexicalAnalysis.allCodes)
+
+	if err == nil {
+		t.Errorf("Invalid attribution syntax sentence")
+	}
+}
+
+func TestSyntaxAnalysis16(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis(false)
+	syntaxAnalysis := newSyntaxAnalysis(false)
+
+	codeStr = `int a = b`
+
+	lexicalAnalysis.Start([]rune(codeStr))
+	err = syntaxAnalysis.Start(lexicalAnalysis.allCodes)
+
+	if err != nil {
+		t.Error(err)
+	} else {
+		if syntaxAnalysis.allSentences.Len() != 1 {
+			t.Errorf("syntaxAnalysis.allSentences.Len() invalid value %v", syntaxAnalysis.allSentences.Len())
+			return
+		}
+
+		sentence := syntaxAnalysis.allSentences.Front().Value.(*sentence)
+
+		if sentence.codes.Len() != 4 {
+			t.Errorf("sentence.codes.Len() invalid value %v", sentence.codes.Len())
+		}
+	}
+}
+
+func TestSyntaxAnalysis17(t *testing.T) {
+	var err error
+	var codeStr string
+	lexicalAnalysis := newLexicalAnalysis(false)
+	syntaxAnalysis := newSyntaxAnalysis(false)
+
+	codeStr = `int a = a = b`
+
+	lexicalAnalysis.Start([]rune(codeStr))
+	err = syntaxAnalysis.Start(lexicalAnalysis.allCodes)
+
+	if err == nil {
+		t.Errorf("Invalid attribution syntax sentence count in a sentece")
+	}
+}

@@ -6,21 +6,27 @@ import (
 )
 
 type syntaxAnalysis struct {
-	showLogs                      bool
-	allSentences                  *list.List
-	currentSentence               *sentence
-	previousCode                  *code
-	currentSentenceOpenedPriority int
+	showLogs                           bool
+	allSentences                       *list.List
+	currentSentence                    *sentence
+	previousCode                       *code
+	currentSentenceOpenedPriority      int
+	currentSentenceAttributionSymbols  int
+	currentSentenceHaveTypeKeyword     bool
+	currentSentenceAttrubutionFinished bool
 }
 
 // syntaxAnalysis constructor
 func newSyntaxAnalysis(showLogs bool) *syntaxAnalysis {
 	return &syntaxAnalysis{
-		showLogs:                      showLogs,
-		allSentences:                  list.New(),
-		currentSentence:               newSentence(),
-		previousCode:                  nil,
-		currentSentenceOpenedPriority: 0,
+		showLogs:                           showLogs,
+		allSentences:                       list.New(),
+		currentSentence:                    newSentence(),
+		previousCode:                       nil,
+		currentSentenceOpenedPriority:      0,
+		currentSentenceAttributionSymbols:  0,
+		currentSentenceHaveTypeKeyword:     false,
+		currentSentenceAttrubutionFinished: false,
 	}
 }
 
@@ -170,6 +176,11 @@ func (sa *syntaxAnalysis) endSentence() error {
 
 		sa.allSentences.PushBack(sa.currentSentence)
 		sa.currentSentence = newSentence()
+		sa.previousCode = nil
+		sa.currentSentenceOpenedPriority = 0
+		sa.currentSentenceAttributionSymbols = 0
+		sa.currentSentenceHaveTypeKeyword = false
+		sa.currentSentenceAttrubutionFinished = false
 	}
 
 	return nil
@@ -180,11 +191,30 @@ func (sa *syntaxAnalysis) pushCodeBack(code *code) {
 	sa.previousCode = code
 }
 
+func (sa *syntaxAnalysis) attributionIsOpened() bool {
+	return sa.currentSentenceHaveTypeKeyword &&
+		(sa.currentSentenceAttributionSymbols == 0 || !sa.currentSentenceAttrubutionFinished)
+}
+
+func (sa *syntaxAnalysis) sentenceFirstCode() *code {
+	c := sa.currentSentence.codes.Front().Value.(*code)
+
+	return c
+}
+
 func (sa *syntaxAnalysis) processLineBreaker(code *code) (bool, error) {
 	if code.isLineBreaker() {
-		if !sa.previousCode.isMathOperationSymbol() {
-			sa.endSentence()
+		if sa.previousCode != nil {
+			if sa.previousCode.isTypeKeyword() {
+				return true, syntaxAnalysisErrorEndingCode(sa.previousCode)
+			} else if sa.attributionIsOpened() {
+				return true, syntaxAnalysisInvalidAttribution(sa.sentenceFirstCode().line)
+			} else if !sa.previousCode.isMathOperationSymbol() {
+				sa.endSentence()
+			}
 		}
+
+		sa.endSentence()
 	}
 
 	return false, nil
@@ -192,14 +222,20 @@ func (sa *syntaxAnalysis) processLineBreaker(code *code) (bool, error) {
 
 func (sa *syntaxAnalysis) processLiteralValue(code *code) (bool, error) {
 	if code.isLiteralValue() {
-		if sa.previousCode == nil ||
-			sa.previousCode.isMathOperationSymbol() ||
-			sa.previousCode.isAttributionSymbol() ||
-			sa.previousCode.isOpenPrioritySymbol() {
+		if !sa.attributionIsOpened() {
+			if sa.previousCode == nil ||
+				sa.previousCode.isMathOperationSymbol() ||
+				sa.previousCode.isAttributionSymbol() ||
+				sa.previousCode.isOpenPrioritySymbol() {
 
-			sa.pushCodeBack(code)
+				sa.pushCodeBack(code)
 
-			return true, nil
+				sa.currentSentenceAttrubutionFinished = true
+
+				return true, nil
+			}
+		} else {
+			return true, syntaxAnalysisInvalidAttribution(sa.sentenceFirstCode().line)
 		}
 
 		return true, syntaxAnalysisError(sa.previousCode, code)
@@ -218,6 +254,10 @@ func (sa *syntaxAnalysis) processIdentifier(code *code) (bool, error) {
 
 			sa.pushCodeBack(code)
 
+			if sa.currentSentenceAttributionSymbols > 0 {
+				sa.currentSentenceAttrubutionFinished = true
+			}
+
 			return true, nil
 		}
 
@@ -229,16 +269,20 @@ func (sa *syntaxAnalysis) processIdentifier(code *code) (bool, error) {
 
 func (sa *syntaxAnalysis) processMathOperationSymbol(code *code, endingSentence bool) (bool, error) {
 	if code.isMathOperationSymbol() {
-		if endingSentence {
-			return true, syntaxAnalysisErrorEndingCode(code.value)
-		} else if sa.previousCode != nil &&
-			(sa.previousCode.isLiteralValue() ||
-				sa.previousCode.isIdentifier() ||
-				sa.previousCode.isClosePrioritySymbol()) {
+		if !sa.attributionIsOpened() {
+			if endingSentence {
+				return true, syntaxAnalysisErrorEndingCode(code)
+			} else if sa.previousCode != nil &&
+				(sa.previousCode.isLiteralValue() ||
+					sa.previousCode.isIdentifier() ||
+					sa.previousCode.isClosePrioritySymbol()) {
 
-			sa.pushCodeBack(code)
+				sa.pushCodeBack(code)
 
-			return true, nil
+				return true, nil
+			}
+		} else {
+			return true, syntaxAnalysisInvalidAttribution(sa.sentenceFirstCode().line)
 		}
 
 		return true, syntaxAnalysisError(sa.previousCode, code)
@@ -250,10 +294,13 @@ func (sa *syntaxAnalysis) processMathOperationSymbol(code *code, endingSentence 
 func (sa *syntaxAnalysis) processTypeKeyword(code *code, endingSentence bool) (bool, error) {
 	if code.isTypeKeyword() {
 		if endingSentence {
-			return true, syntaxAnalysisErrorEndingCode(code.value)
+			return true, syntaxAnalysisErrorEndingCode(code)
 		} else if sa.previousCode == nil ||
 			code.isTypeKeyword() {
+
 			sa.pushCodeBack(code)
+
+			sa.currentSentenceHaveTypeKeyword = true
 
 			return true, nil
 		}
@@ -266,13 +313,17 @@ func (sa *syntaxAnalysis) processTypeKeyword(code *code, endingSentence bool) (b
 
 func (sa *syntaxAnalysis) processAttributionSymbol(code *code, endingSentence bool) (bool, error) {
 	if code.isAttributionSymbol() {
-		if endingSentence {
-			return true, syntaxAnalysisErrorEndingCode(code.value)
+		if sa.currentSentenceAttributionSymbols > 0 {
+			return true, syntaxAnalysisManyAttributionSymbolsInASentence(sa.sentenceFirstCode().line)
+		} else if endingSentence {
+			return true, syntaxAnalysisErrorEndingCode(code)
 		} else if sa.previousCode != nil &&
 			(sa.previousCode.isIdentifier() ||
 				sa.previousCode.isOpenPrioritySymbol()) {
 
 			sa.pushCodeBack(code)
+
+			sa.currentSentenceAttributionSymbols++
 
 			return true, nil
 		}
@@ -286,7 +337,7 @@ func (sa *syntaxAnalysis) processAttributionSymbol(code *code, endingSentence bo
 func (sa *syntaxAnalysis) processOpenPrioritySymbol(code *code, endingSentence bool) (bool, error) {
 	if code.isOpenPrioritySymbol() {
 		if endingSentence {
-			return true, syntaxAnalysisErrorEndingCode(code.value)
+			return true, syntaxAnalysisErrorEndingCode(code)
 		} else if sa.previousCode == nil ||
 			sa.previousCode.isIdentifier() ||
 			sa.previousCode.isMathOperationSymbol() ||
@@ -296,6 +347,8 @@ func (sa *syntaxAnalysis) processOpenPrioritySymbol(code *code, endingSentence b
 			sa.pushCodeBack(code)
 
 			sa.currentSentenceOpenedPriority++
+
+			sa.currentSentenceAttrubutionFinished = true
 
 			return true, nil
 		}

@@ -26,7 +26,7 @@ go run main.go
 - ( -> ) || line_breaker || identifier || literal_value
 - ) -> math_operation_symbol || line_breaker
 
-*1 = if doesn't exist "(" on current sentence (TODO: saber se pode estar nessa posição?)
+*1 = if exists "type_keyword" on current sentence
 
 *2 = if exists "(" on current sentence
 

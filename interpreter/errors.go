@@ -49,8 +49,18 @@ func syntaxAnalysisError(previousCode *code, currentCode *code) error {
 	)
 }
 
-func syntaxAnalysisErrorEndingCode(currentValue string) error {
-	return fmt.Errorf("Code %v can't end sentence", currentValue)
+func syntaxAnalysisErrorEndingCode(currentCode *code) error {
+	return fmt.Errorf(
+		"Code %v (%v) can't end sentence at line %v", currentCode.value, currentCode.label, currentCode.line,
+	)
+}
+
+func syntaxAnalysisInvalidAttribution(line int) error {
+	return fmt.Errorf("Invalid attribution syntax sentence started at line %v", line)
+}
+
+func syntaxAnalysisManyAttributionSymbolsInASentence(line int) error {
+	return fmt.Errorf("Invalid attribution syntax count in a sentece started at line %v", line)
 }
 
 func syntaxAnalysisPriorityNotClosed(line int) error {
