@@ -191,9 +191,12 @@ func (sa *syntaxAnalysis) pushCodeBack(code *code) {
 	sa.previousCode = code
 }
 
+func (sa *syntaxAnalysis) declarationIsOpened() bool {
+	return sa.currentSentenceHaveTypeKeyword && sa.currentSentenceAttributionSymbols == 0
+}
+
 func (sa *syntaxAnalysis) attributionIsOpened() bool {
-	return sa.currentSentenceHaveTypeKeyword &&
-		(sa.currentSentenceAttributionSymbols == 0 || !sa.currentSentenceAttrubutionFinished)
+	return sa.currentSentenceAttributionSymbols > 0 && !sa.currentSentenceAttrubutionFinished
 }
 
 func (sa *syntaxAnalysis) sentenceFirstCode() *code {
@@ -222,7 +225,7 @@ func (sa *syntaxAnalysis) processLineBreaker(code *code) (bool, error) {
 
 func (sa *syntaxAnalysis) processLiteralValue(code *code) (bool, error) {
 	if code.isLiteralValue() {
-		if !sa.attributionIsOpened() {
+		if !sa.declarationIsOpened() || sa.attributionIsOpened() {
 			if sa.previousCode == nil ||
 				sa.previousCode.isMathOperationSymbol() ||
 				sa.previousCode.isAttributionSymbol() ||
@@ -269,7 +272,7 @@ func (sa *syntaxAnalysis) processIdentifier(code *code) (bool, error) {
 
 func (sa *syntaxAnalysis) processMathOperationSymbol(code *code, endingSentence bool) (bool, error) {
 	if code.isMathOperationSymbol() {
-		if !sa.attributionIsOpened() {
+		if !sa.declarationIsOpened() && !sa.attributionIsOpened() {
 			if endingSentence {
 				return true, syntaxAnalysisErrorEndingCode(code)
 			} else if sa.previousCode != nil &&
